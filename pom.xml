@@ -7,7 +7,7 @@
     <name>Liquibase Parent</name>
     <groupId>org.liquibase</groupId>
     <artifactId>liquibase</artifactId>
-    <version>0-SNAPSHOT</version>
+    <version>4.22.0</version>
     <packaging>pom</packaging>
 
     <url>http://www.liquibase.com</url>
@@ -251,7 +251,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://192.168.23.137:17080/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -439,82 +451,4 @@
         </pluginManagement>
     </build>
 
-    <profiles>
-        <profile>
-            <id>non-jdk-8</id>
-            <activation>
-                <jdk>!1.8</jdk>
-            </activation>
-            <properties>
-                <maven.compiler.release>8</maven.compiler.release>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!-- CDILiquibaseTest is currently failing without this setting -->
-                            <argLine>
-                                @{argLine}
-                                --illegal-access=warn
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                            </argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>sonar</id>
-            <properties>
-                <sonar.organization>liquibase</sonar.organization>
-                <sonar.projectKey>liquibase</sonar.projectKey>
-                <sonar.projectName>Liquibase</sonar.projectName>
-                <sonar.projectDescription>Liquibase</sonar.projectDescription>
-                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.scm.provider>git</sonar.scm.provider>
-                <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
-                <sonar.skip>true</sonar.skip>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.9.1.2184</version>
-                        <executions>
-                            <execution>
-                                <id>sonar</id>
-                                <goals>
-                                    <goal>sonar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.10</version>
-                        <executions>
-                            <execution>
-                                <id>prepare-agent</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

@@ -472,5 +472,9 @@ public interface Database extends PrioritizedService, AutoCloseable {
     String unescapeDataTypeString(String dataTypeString);
 
     ValidationErrors validate();
+
+    String getUniqueConstraints(final String catalogName, final String schemaName, final String tableName);
+
+    String getConstraintList(String catalogName, String schemaName, String constraintName, String tableName, boolean bulkQuery);
 }
 

@@ -381,22 +381,25 @@ public class UniqueConstraintSnapshotGenerator extends JdbcSnapshotGenerator {
                 String schemaName = database.correctObjectName(schema.getName(), Schema.class);
                 String constraintName = database.correctObjectName(name, UniqueConstraint.class);
                 String tableName = database.correctObjectName(table.getName(), Table.class);
-                sql = "select CONSTRAINT_NAME, COLUMN_LIST as COLUMN_NAME, constraint_schema as CONSTRAINT_CONTAINER "
-                        + "from " + database.getSystemSchema() + ".constraints "
-                        + "where constraint_type='UNIQUE' ";
-                if (catalogName != null) {
-                    sql += "and constraint_catalog='" + catalogName + "' ";
-                }
-                if (schemaName != null) {
-                    sql += "and constraint_schema='" + schemaName + "' ";
-                }
-
-                if (!bulkQuery) {
-                    if (tableName != null) {
-                        sql += "and table_name='" + tableName + "' ";
+                sql = database.getConstraintList(catalogName, schemaName, constraintName, tableName, bulkQuery);
+                if (StringUtil.isEmpty(sql)) {
+                    sql = "select CONSTRAINT_NAME, COLUMN_LIST as COLUMN_NAME, constraint_schema as CONSTRAINT_CONTAINER "
+                            + "from " + database.getSystemSchema() + ".constraints "
+                            + "where constraint_type='UNIQUE' ";
+                    if (catalogName != null) {
+                        sql += "and constraint_catalog='" + catalogName + "' ";
                     }
-                    if (constraintName != null) {
-                        sql += "and constraint_name='" + constraintName + "'";
+                    if (schemaName != null) {
+                        sql += "and constraint_schema='" + schemaName + "' ";
+                    }
+
+                    if (!bulkQuery) {
+                        if (tableName != null) {
+                            sql += "and table_name='" + tableName + "' ";
+                        }
+                        if (constraintName != null) {
+                            sql += "and constraint_name='" + constraintName + "'";
+                        }
                     }
                 }
             }

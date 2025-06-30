@@ -820,4 +820,14 @@ public class MockDatabase implements Database, InternalDatabase {
     public boolean requiresExplicitNullForColumns() {
         return false;
     }
+
+    @Override
+    public String getUniqueConstraints(String catalogName, String schemaName, String tableName) {
+        return null;
+    }
+
+    @Override
+    public String getConstraintList(String catalogName, String schemaName, String constraintName, String tableName, boolean bulkQuery) {
+        return null;
+    }
 }
