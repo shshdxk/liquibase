@@ -1664,4 +1664,14 @@ public abstract class AbstractJdbcDatabase implements Database {
     public String getConstraintList(String catalogName, String schemaName, String constraintName, String tableName, boolean bulkQuery) {
         return null;
     }
+
+    @Override
+    public boolean supportsTableRemarks() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsColumnRemarks() {
+        return false;
+    }
 }
