@@ -3,6 +3,7 @@ package liquibase.diff;
 import liquibase.database.Database;
 import liquibase.diff.compare.CompareControl;
 import liquibase.diff.compare.DatabaseObjectComparatorFactory;
+import liquibase.statement.DatabaseFunction;
 import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.DataType;
 
@@ -131,7 +132,16 @@ public class ObjectDifferences {
                         && !referenceValue.getClass().equals(compareToValue.getClass())) { //standardize on a common number type
                     referenceValue = new BigDecimal(referenceValue.toString());
                     compareToValue = new BigDecimal(compareToValue.toString());
+                } else if ((referenceValue instanceof Boolean) && (compareToValue instanceof Integer)) {
+                    boolean bool = Objects.equals(compareToValue, 1);
+                    return referenceValue.equals(bool);
+                } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof Number)) {
+                    return ((DatabaseFunction) referenceValue) .getValue().equalsIgnoreCase(compareToValue.toString());
+                } else if ((referenceValue instanceof Number) && (compareToValue instanceof DatabaseFunction)) {
+                    return ((DatabaseFunction) compareToValue) .getValue().equalsIgnoreCase(referenceValue.toString());
+
                 }
+
                 if ((referenceValue instanceof Number) && (referenceValue instanceof Comparable)) {
                     return (compareToValue instanceof Number) && (((Comparable) referenceValue).compareTo
                         (compareToValue) == 0);
