@@ -124,6 +124,12 @@ public class ObjectDifferences {
             if ((referenceValue == null) || (compareToValue == null)) {
                 return false;
             }
+            if (referenceValue instanceof String) {
+                referenceValue = ((String) referenceValue).trim();
+            }
+            if (compareToValue instanceof String) {
+                compareToValue = ((String) compareToValue).trim();
+            }
 
             if ((referenceValue instanceof DatabaseObject) && (compareToValue instanceof DatabaseObject)) {
                 return DatabaseObjectComparatorFactory.getInstance().isSameObject((DatabaseObject) referenceValue, (DatabaseObject) compareToValue, schemaComparisons, accordingTo);
