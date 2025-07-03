@@ -108,6 +108,7 @@ public class IndexComparator implements DatabaseObjectComparator {
     public ObjectDifferences findDifferences(DatabaseObject databaseObject1, DatabaseObject databaseObject2, Database accordingTo, CompareControl compareControl, DatabaseObjectComparatorChain chain, Set<String> exclude) {
         exclude.add("name");
         exclude.add("columns");
+        exclude.add("unique");
         ObjectDifferences differences = chain.findDifferences(databaseObject1, databaseObject2, accordingTo, compareControl, exclude);
 
         differences.compare("columns", databaseObject1, databaseObject2, (referenceValue, compareToValue) -> {

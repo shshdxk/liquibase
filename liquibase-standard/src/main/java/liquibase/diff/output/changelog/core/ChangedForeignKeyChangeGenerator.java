@@ -4,6 +4,7 @@ import liquibase.change.Change;
 import liquibase.change.core.AddForeignKeyConstraintChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
 import liquibase.database.Database;
+import liquibase.diff.Difference;
 import liquibase.diff.ObjectDifferences;
 import liquibase.diff.output.DiffOutputControl;
 import liquibase.diff.output.changelog.AbstractChangeGenerator;
@@ -41,8 +42,10 @@ public class ChangedForeignKeyChangeGenerator extends AbstractChangeGenerator im
 
         StringUtil.StringUtilFormatter<Column> formatter = obj -> obj.toString(false);
 
+        Difference dropName = differences.getDifference("name");
+
         DropForeignKeyConstraintChange dropFkChange = new DropForeignKeyConstraintChange();
-        dropFkChange.setConstraintName(fk.getName());
+        dropFkChange.setConstraintName(dropName == null ? fk.getName() : dropName.getComparedValue().toString());
         dropFkChange.setBaseTableName(fk.getForeignKeyTable().getName());
 
         AddForeignKeyConstraintChange addFkChange = new AddForeignKeyConstraintChange();

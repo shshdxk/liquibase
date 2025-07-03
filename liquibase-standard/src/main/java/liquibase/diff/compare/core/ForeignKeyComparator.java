@@ -95,7 +95,7 @@ public class ForeignKeyComparator implements DatabaseObjectComparator {
 
     @Override
     public ObjectDifferences findDifferences(DatabaseObject databaseObject1, DatabaseObject databaseObject2, Database accordingTo, CompareControl compareControl, DatabaseObjectComparatorChain chain, Set<String> exclue) {
-        exclue.add("name");
+//        exclue.add("name");
         exclue.add("backingIndex");
         exclue.add("foreignKeyColumns");
         exclue.add("primaryKeyColumns");
