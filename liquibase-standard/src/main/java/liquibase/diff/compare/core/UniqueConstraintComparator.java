@@ -104,7 +104,7 @@ public class UniqueConstraintComparator implements DatabaseObjectComparator {
 
     @Override
     public ObjectDifferences findDifferences(DatabaseObject databaseObject1, DatabaseObject databaseObject2, Database accordingTo, CompareControl compareControl, DatabaseObjectComparatorChain chain, Set<String> exclude) {
-        exclude.add("name");
+//        exclude.add("name");
         exclude.add("columns");
         exclude.add("backingIndex");
         ObjectDifferences differences = chain.findDifferences(databaseObject1, databaseObject2, accordingTo, compareControl, exclude);
@@ -117,14 +117,15 @@ public class UniqueConstraintComparator implements DatabaseObjectComparator {
                 return false;
             }
             for (int i=0; i<referenceList.size(); i++) {
-                if (!StringUtil.trimToEmpty((referenceList.get(i)).getName()).equalsIgnoreCase(StringUtil.trimToEmpty(compareList.get(i).getName()))) {
+                String name = StringUtil.trimToEmpty((referenceList.get(i)).getName());
+                if (compareList.stream().noneMatch(c -> name.equalsIgnoreCase(StringUtil.trimToEmpty(c.getName())))) {
                     return false;
                 }
             }
             return true;
         });
 
-        differences.compare("backingIndex", databaseObject1, databaseObject2, new ObjectDifferences.StandardCompareFunction(chain.getSchemaComparisons(), accordingTo));
+//        differences.compare("backingIndex", databaseObject1, databaseObject2, new ObjectDifferences.StandardCompareFunction(chain.getSchemaComparisons(), accordingTo));
         return differences;
     }
 }

@@ -145,7 +145,8 @@ public class ObjectDifferences {
                     return ((DatabaseFunction) referenceValue) .getValue().equalsIgnoreCase(compareToValue.toString());
                 } else if ((referenceValue instanceof Number) && (compareToValue instanceof DatabaseFunction)) {
                     return ((DatabaseFunction) compareToValue) .getValue().equalsIgnoreCase(referenceValue.toString());
-
+                } else if ((referenceValue instanceof String) && (compareToValue instanceof String)) {
+                    return ((String) referenceValue).equalsIgnoreCase(((String) compareToValue));
                 }
 
                 if ((referenceValue instanceof Number) && (referenceValue instanceof Comparable)) {
