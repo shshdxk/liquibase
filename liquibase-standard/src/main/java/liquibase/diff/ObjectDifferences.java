@@ -141,6 +141,9 @@ public class ObjectDifferences {
                 } else if ((referenceValue instanceof Boolean) && (compareToValue instanceof Integer)) {
                     boolean bool = Objects.equals(compareToValue, 1);
                     return referenceValue.equals(bool);
+                } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof Boolean)) {
+                    boolean bool = Objects.equals(((DatabaseFunction) referenceValue).getValue(), "1");
+                    return compareToValue.equals(bool);
                 } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof Number)) {
                     return ((DatabaseFunction) referenceValue) .getValue().equalsIgnoreCase(compareToValue.toString());
                 } else if ((referenceValue instanceof Number) && (compareToValue instanceof DatabaseFunction)) {
