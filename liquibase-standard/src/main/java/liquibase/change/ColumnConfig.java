@@ -154,10 +154,9 @@ public class ColumnConfig extends AbstractLiquibaseSerializable {
                     }
                 }
             }
-
-            if (nonDefaultConstraints) {
-                setConstraints(constraints);
-            }
+        }
+        if (nonDefaultConstraints) {
+            setConstraints(constraints);
         }
 
         setRemarks(columnSnapshot.getRemarks());
