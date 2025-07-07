@@ -1,2 +1,0 @@
-liquibase.extension.testing.testsystem.command.TestSystemDownCommand
-liquibase.extension.testing.testsystem.command.TestSystemUpCommand
