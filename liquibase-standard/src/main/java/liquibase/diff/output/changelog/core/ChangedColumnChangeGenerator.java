@@ -81,10 +81,9 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 LiquibaseDataType type2 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
                         .getComparedValue(), comparisonDatabase);
                 if (!type1.getName().equalsIgnoreCase(type2.getName())) {
-//                    if (!"varchar".equalsIgnoreCase(type1.getName()) || !"clob".equalsIgnoreCase(type2.getName())) {
-//                        changed = true;
-//                    }
-                    changed = true;
+                    if (!"tinyint".equalsIgnoreCase(type2.getName()) || !"boolean".equalsIgnoreCase(type1.getName())) {
+                        changed = true;
+                    }
                 } else if ("varchar".equalsIgnoreCase(type1.getName())) {
                     Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;
                     Object size2 = type2.getParameters().length > 0 ? type2.getParameters()[0] : null;
