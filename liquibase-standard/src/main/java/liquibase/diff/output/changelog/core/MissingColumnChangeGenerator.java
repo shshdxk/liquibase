@@ -10,10 +10,7 @@ import liquibase.diff.output.changelog.AbstractChangeGenerator;
 import liquibase.diff.output.changelog.ChangeGeneratorChain;
 import liquibase.diff.output.changelog.MissingObjectChangeGenerator;
 import liquibase.structure.DatabaseObject;
-import liquibase.structure.core.Column;
-import liquibase.structure.core.PrimaryKey;
-import liquibase.structure.core.Table;
-import liquibase.structure.core.View;
+import liquibase.structure.core.*;
 
 public class MissingColumnChangeGenerator extends AbstractChangeGenerator implements MissingObjectChangeGenerator {
 
@@ -66,9 +63,18 @@ public class MissingColumnChangeGenerator extends AbstractChangeGenerator implem
         AddColumnConfig columnConfig = createAddColumnConfig();
         columnConfig.setName(column.getName());
 
-        String dataType = column.getType().toString();
-
-        columnConfig.setType(dataType);
+        DataType dataType = column.getType();
+//        if ("varchar".equalsIgnoreCase(dataType.getTypeName()) && dataType.getColumnSize() != null
+//                && dataType.getColumnSize() == Integer.MAX_VALUE) {
+//            if (comparisonDatabase instanceof MySQLDatabase) {
+//                dataType.setTypeName("longtext");
+//                dataType.setColumnSize(null);
+//            } else {
+//                dataType.setTypeName("text");
+//                dataType.setColumnSize(null);
+//            }
+//        }
+        columnConfig.setType(dataType.toString());
 
         MissingTableChangeGenerator.setDefaultValue(columnConfig, column, comparisonDatabase);
 
