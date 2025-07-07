@@ -80,10 +80,11 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                         .getReferenceValue(), comparisonDatabase);
                 LiquibaseDataType type2 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
                         .getComparedValue(), comparisonDatabase);
-                if (!type1.getName().equals(type2.getName())) {
+                if (!type1.getName().equalsIgnoreCase(type2.getName())) {
 //                    if (!"varchar".equalsIgnoreCase(type1.getName()) || !"clob".equalsIgnoreCase(type2.getName())) {
 //                        changed = true;
 //                    }
+                    changed = true;
                 } else if ("varchar".equalsIgnoreCase(type1.getName())) {
                     Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;
                     Object size2 = type2.getParameters().length > 0 ? type2.getParameters()[0] : null;
@@ -112,11 +113,11 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
             modifyColumn.setCatalogName(catalogName);
             modifyColumn.setSchemaName(schemaName);
             modifyColumn.setTableName(tableName);
-            AddColumnConfig addColumnConfig = new AddColumnConfig(column);
+            AddColumnConfig columnConfig = new AddColumnConfig(column);
 //            addColumnConfig.setName(column.getName());
 //            addColumnConfig.setType(column.getType().toString());
 //            addColumnConfig.setConstraints(null);
-            modifyColumn.setColumns(Collections.singletonList(addColumnConfig));
+            modifyColumn.setColumns(Collections.singletonList(columnConfig));
             changes.add(modifyColumn);
         } else {
             handleTypeDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
@@ -205,9 +206,45 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
         }
     }
 
+//    protected void handleTypeDifferences(Column column, ObjectDifferences differences, DiffOutputControl control, List<Change> changes, Database referenceDatabase, Database comparisonDatabase) {
+//        handleTypeDifferencesIn(column, differences, control, changes, referenceDatabase, comparisonDatabase);
+//    }
+
     protected void handleTypeDifferences(Column column, ObjectDifferences differences, DiffOutputControl control, List<Change> changes, Database referenceDatabase, Database comparisonDatabase) {
         Difference typeDifference = differences.getDifference("type");
         if (typeDifference != null) {
+
+            boolean changed = false;
+            LiquibaseDataType type1 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                    .getReferenceValue(), comparisonDatabase);
+            LiquibaseDataType type2 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                    .getComparedValue(), comparisonDatabase);
+            String type = null;
+//            DataType dataType = column.getType();
+//            if ("varchar".equalsIgnoreCase(dataType.getTypeName()) && dataType.getColumnSize() != null
+//                    && dataType.getColumnSize() == Integer.MAX_VALUE) {
+//                dataType.setTypeName("text");
+//                dataType.setColumnSize(null);
+//                type = dataType.toString();
+//            }
+            if (!type1.getName().equalsIgnoreCase(type2.getName())) {
+//                    if (!"varchar".equalsIgnoreCase(type1.getName()) || !"clob".equalsIgnoreCase(type2.getName())) {
+//                        changed = true;
+//                    }
+
+
+                changed = true;
+            } else if ("varchar".equalsIgnoreCase(type1.getName())) {
+                Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;
+                Object size2 = type2.getParameters().length > 0 ? type2.getParameters()[0] : null;
+                if (size1 != null && size2 != null && !Objects.equals(size1, size2)) {
+                    changed = true;
+                }
+            }
+            if (!changed) {
+                return;
+            }
+
             String catalogName = null;
             String schemaName = null;
             if (control.getIncludeCatalog()) {
@@ -271,8 +308,12 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 change.setSchemaName(schemaName);
                 change.setTableName(tableName);
                 change.setColumnName(column.getName());
-                DataType referenceType = (DataType) typeDifference.getReferenceValue();
-                change.setNewDataType(DataTypeFactory.getInstance().from(referenceType, comparisonDatabase).toString());
+                if (type == null) {
+                    DataType referenceType = (DataType) typeDifference.getReferenceValue();
+                    change.setNewDataType(DataTypeFactory.getInstance().from(referenceType, comparisonDatabase).toString());
+                } else {
+                    change.setNewDataType(type);
+                }
 
                 changes.add(change);
             }

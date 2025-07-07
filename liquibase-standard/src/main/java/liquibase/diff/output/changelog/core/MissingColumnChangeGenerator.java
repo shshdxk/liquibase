@@ -63,18 +63,7 @@ public class MissingColumnChangeGenerator extends AbstractChangeGenerator implem
         AddColumnConfig columnConfig = createAddColumnConfig();
         columnConfig.setName(column.getName());
 
-        DataType dataType = column.getType();
-//        if ("varchar".equalsIgnoreCase(dataType.getTypeName()) && dataType.getColumnSize() != null
-//                && dataType.getColumnSize() == Integer.MAX_VALUE) {
-//            if (comparisonDatabase instanceof MySQLDatabase) {
-//                dataType.setTypeName("longtext");
-//                dataType.setColumnSize(null);
-//            } else {
-//                dataType.setTypeName("text");
-//                dataType.setColumnSize(null);
-//            }
-//        }
-        columnConfig.setType(dataType.toString());
+        columnConfig.setType(column.getType().toString());
 
         MissingTableChangeGenerator.setDefaultValue(columnConfig, column, comparisonDatabase);
 
