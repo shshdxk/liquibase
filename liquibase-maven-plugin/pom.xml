@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.liquibase</groupId>
+        <groupId>io.github.shshdxk</groupId>
         <artifactId>liquibase</artifactId>
         <version>4.22.0</version>
     </parent>
@@ -21,7 +21,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.liquibase</groupId>
+            <groupId>io.github.shshdxk</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${project.version}</version>
         </dependency>

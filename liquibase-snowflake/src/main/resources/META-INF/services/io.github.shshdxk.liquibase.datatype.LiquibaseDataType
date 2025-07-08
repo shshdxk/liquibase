@@ -1,0 +1,3 @@
+io.github.shshdxk.liquibase.datatype.core.TextDataTypeSnowflake
+io.github.shshdxk.liquibase.datatype.core.TimestampNTZTypeSnowflake
+io.github.shshdxk.liquibase.datatype.core.DoubleDataTypeSnowflake

@@ -6,13 +6,13 @@
     bean-discovery-mode="all">
 
     <scan>
-        <exclude name="liquibase.integration.ant.**">
+        <exclude name="io.github.shshdxk.liquibase.integration.ant.**">
             <if-class-not-available name="org.apache.tools.ant.Task"/>
         </exclude>
-        <exclude name="liquibase.integration.servlet.**">
+        <exclude name="io.github.shshdxk.liquibase.integration.servlet.**">
             <if-class-not-available name="javax.servlet.ServletContext"/>
         </exclude>
-        <exclude name="liquibase.integration.spring.**">
+        <exclude name="io.github.shshdxk.liquibase.integration.spring.**">
             <if-class-not-available name="org.springframework.beans.factory.InitializingBean"/>
         </exclude>
     </scan>

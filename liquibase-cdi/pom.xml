@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.liquibase</groupId>
+        <groupId>io.github.shshdxk</groupId>
         <artifactId>liquibase</artifactId>
         <version>4.22.0</version>
     </parent>
@@ -20,14 +20,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.liquibase</groupId>
+            <groupId>io.github.shshdxk</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <!-- we have a liquibase-standard dependency here for tests-jar -->
         <dependency>
-            <groupId>org.liquibase</groupId>
+            <groupId>io.github.shshdxk</groupId>
             <artifactId>liquibase-standard</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>

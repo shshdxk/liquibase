@@ -1,0 +1,5 @@
+io.github.shshdxk.liquibase.serializer.core.formattedsql.FormattedSqlChangeLogSerializer
+io.github.shshdxk.liquibase.serializer.core.json.JsonChangeLogSerializer
+io.github.shshdxk.liquibase.serializer.core.string.StringChangeLogSerializer
+io.github.shshdxk.liquibase.serializer.core.xml.XMLChangeLogSerializer
+io.github.shshdxk.liquibase.serializer.core.yaml.YamlChangeLogSerializer

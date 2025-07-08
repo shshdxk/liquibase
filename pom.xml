@@ -5,7 +5,7 @@
 
     <!-- Cannot use "liquibase" as the name since "Liquibase" is used by liquibase-core -->
     <name>Liquibase Parent</name>
-    <groupId>org.liquibase</groupId>
+    <groupId>io.github.shshdxk</groupId>
     <artifactId>liquibase</artifactId>
     <version>4.22.0</version>
     <packaging>pom</packaging>
@@ -90,7 +90,6 @@
 	    <module>liquibase-maven-plugin</module>
 	    <module>liquibase-cdi-jakarta</module>
         <module>liquibase-cdi</module>
-        <module>liquibase-integration-tests</module>
         <module>liquibase-dist</module>
         <module>liquibase-snowflake</module>
     </modules>

@@ -1,0 +1,12 @@
+package io.github.shshdxk.liquibase.precondition;
+
+import io.github.shshdxk.liquibase.serializer.AbstractLiquibaseSerializable;
+
+public abstract class AbstractPrecondition extends AbstractLiquibaseSerializable implements Precondition {
+
+    @Override
+    public String getSerializedObjectName() {
+        return getName();
+    }
+
+}

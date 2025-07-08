@@ -1,0 +1,12 @@
+package io.github.shshdxk.liquibase.serializer;
+
+import io.github.shshdxk.liquibase.servicelocator.PrioritizedService;
+
+public interface LiquibaseSerializer extends PrioritizedService {
+
+    String[] getValidFileExtensions();
+
+    String serialize(LiquibaseSerializable object, boolean pretty);
+
+
+}

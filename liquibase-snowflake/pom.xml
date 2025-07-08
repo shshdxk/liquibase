@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>liquibase</artifactId>
-        <groupId>org.liquibase</groupId>
+        <groupId>io.github.shshdxk</groupId>
         <version>4.22.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,7 @@
     <artifactId>liquibase-snowflake</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.liquibase</groupId>
+            <groupId>io.github.shshdxk</groupId>
             <artifactId>liquibase-standard</artifactId>
             <version>${project.version}</version>
         </dependency>

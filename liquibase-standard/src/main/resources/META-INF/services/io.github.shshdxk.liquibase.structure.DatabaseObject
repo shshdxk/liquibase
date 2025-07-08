@@ -1,0 +1,12 @@
+io.github.shshdxk.liquibase.structure.core.Catalog
+io.github.shshdxk.liquibase.structure.core.Column
+io.github.shshdxk.liquibase.structure.core.Data
+io.github.shshdxk.liquibase.structure.core.ForeignKey
+io.github.shshdxk.liquibase.structure.core.Index
+io.github.shshdxk.liquibase.structure.core.PrimaryKey
+io.github.shshdxk.liquibase.structure.core.Schema
+io.github.shshdxk.liquibase.structure.core.Sequence
+io.github.shshdxk.liquibase.structure.core.StoredProcedure
+io.github.shshdxk.liquibase.structure.core.Table
+io.github.shshdxk.liquibase.structure.core.UniqueConstraint
+io.github.shshdxk.liquibase.structure.core.View

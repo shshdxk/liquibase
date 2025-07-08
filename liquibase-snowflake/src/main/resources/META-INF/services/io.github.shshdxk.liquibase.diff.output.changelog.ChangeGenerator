@@ -1,0 +1,2 @@
+io.github.shshdxk.liquibase.diff.output.changelog.core.ChangedSequenceChangeGeneratorSnowflake
+io.github.shshdxk.liquibase.diff.output.changelog.core.MissingSequenceChangeGeneratorSnowflake

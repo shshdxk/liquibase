@@ -1,0 +1,9 @@
+io.github.shshdxk.liquibase.diff.compare.core.CatalogComparator
+io.github.shshdxk.liquibase.diff.compare.core.ColumnComparator
+io.github.shshdxk.liquibase.diff.compare.core.DefaultDatabaseObjectComparator
+io.github.shshdxk.liquibase.diff.compare.core.ForeignKeyComparator
+io.github.shshdxk.liquibase.diff.compare.core.IndexComparator
+io.github.shshdxk.liquibase.diff.compare.core.PrimaryKeyComparator
+io.github.shshdxk.liquibase.diff.compare.core.SchemaComparator
+io.github.shshdxk.liquibase.diff.compare.core.TableComparator
+io.github.shshdxk.liquibase.diff.compare.core.UniqueConstraintComparator

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.liquibase</groupId>
+        <groupId>io.github.shshdxk</groupId>
         <artifactId>liquibase</artifactId>
         <version>4.22.0</version>
     </parent>
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.liquibase</groupId>
+            <groupId>io.github.shshdxk</groupId>
             <artifactId>liquibase-standard</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>liquibase.integration.commandline.LiquibaseLauncher</mainClass>
+                            <mainClass>io.github.shshdxk.liquibase.integration.commandline.LiquibaseLauncher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

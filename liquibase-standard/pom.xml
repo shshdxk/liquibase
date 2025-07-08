@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.liquibase</groupId>
+        <groupId>io.github.shshdxk</groupId>
         <artifactId>liquibase</artifactId>
         <version>4.22.0</version>
     </parent>
@@ -64,7 +64,7 @@
             <optional>true</optional>
         </dependency>
 <!--        <dependency>-->
-<!--            <groupId>org.liquibase</groupId>-->
+<!--            <groupId>io.github.shshdxk</groupId>-->
 <!--            <artifactId>liquibase-core</artifactId>-->
 <!--            <version>0-SNAPSHOT</version>-->
 <!--        </dependency>-->
@@ -201,7 +201,7 @@
                     <instructions>
                         <Bundle-SymbolicName>org.liquibase.core</Bundle-SymbolicName>
                         <Bundle-Name>liquibase-core</Bundle-Name>
-                        <Bundle-Activator>liquibase.osgi.Activator</Bundle-Activator>
+                        <Bundle-Activator>io.github.shshdxk.liquibase.osgi.Activator</Bundle-Activator>
                         <Import-Package>
                             javax.activation*;resolution:=optional,
                             javax.servlet.*;version="[2.6,4)";resolution:=optional,
@@ -215,70 +215,84 @@
                             www.liquibase.org.xml.ns.dbchangelog
                         </Export-Package>
                         <Provide-Capability>
-                            osgi.serviceloader; osgi.serviceloader=liquibase.serializer.ChangeLogSerializer,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.parser.NamespaceDetails,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.database.Database,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.change.Change,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.database.DatabaseConnection,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.precondition.Precondition,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.serializer.SnapshotSerializer,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.configuration.AutoloadedConfigurations,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.diff.DiffGenerator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.lockservice.LockService,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.changelog.ChangeLogHistoryService,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.datatype.LiquibaseDataType,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.configuration.ConfigurationValueProvider,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.logging.LogService,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.snapshot.SnapshotGenerator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.parser.ChangeLogParser,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.servicelocator.ServiceLocator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.diff.compare.DatabaseObjectComparator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.command.LiquibaseCommand,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.license.LicenseService,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.diff.output.changelog.ChangeGenerator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.executor.Executor,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.structure.DatabaseObject,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.parser.SnapshotParser,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.hub.HubService,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.command.CommandStep,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.sqlgenerator.SqlGenerator,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.logging.mdc.MdcManager,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.logging.mdc.CustomMdcObject,
-                            osgi.serviceloader; osgi.serviceloader=liquibase.resource.PathHandler
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.serializer.ChangeLogSerializer,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.parser.NamespaceDetails,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.database.Database,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.change.Change,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.database.DatabaseConnection,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.precondition.Precondition,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.serializer.SnapshotSerializer,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.configuration.AutoloadedConfigurations,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.diff.DiffGenerator,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.lockservice.LockService,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.changelog.ChangeLogHistoryService,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.datatype.LiquibaseDataType,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.configuration.ConfigurationValueProvider,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.logging.LogService,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.snapshot.SnapshotGenerator,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.parser.ChangeLogParser,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.servicelocator.ServiceLocator,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.diff.compare.DatabaseObjectComparator,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.command.LiquibaseCommand,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.license.LicenseService,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.diff.output.changelog.ChangeGenerator,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.executor.Executor,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.structure.DatabaseObject,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.parser.SnapshotParser,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.hub.HubService,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.command.CommandStep,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.sqlgenerator.SqlGenerator,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.logging.mdc.MdcManager,
+                            osgi.serviceloader;
+                            osgi.serviceloader=io.github.shshdxk.liquibase.logging.mdc.CustomMdcObject,
+                            osgi.serviceloader; osgi.serviceloader=io.github.shshdxk.liquibase.resource.PathHandler
                         </Provide-Capability>
                         <Require-Capability>
                             osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)",
                             osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)",
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.serializer.ChangeLogSerializer)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.parser.NamespaceDetails)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.database.Database)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.change.Change)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.database.DatabaseConnection)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.precondition.Precondition)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.serializer.SnapshotSerializer)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.configuration.AutoloadedConfigurations)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.diff.DiffGenerator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.lockservice.LockService)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.changelog.ChangeLogHistoryService)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.datatype.LiquibaseDataType)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.configuration.ConfigurationValueProvider)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.logging.LogService)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.snapshot.SnapshotGenerator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.parser.ChangeLogParser)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.servicelocator.ServiceLocator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.diff.compare.DatabaseObjectComparator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.command.LiquibaseCommand)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.license.LicenseService)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.diff.output.changelog.ChangeGenerator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.executor.Executor)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.structure.DatabaseObject)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.parser.SnapshotParser)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.hub.HubService)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.command.CommandStep)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.sqlgenerator.SqlGenerator)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.logging.mdc.MdcManager)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.logging.mdc.CustomMdcObject)"; cardinality:=multiple,
-                            osgi.serviceloader; filter:="(osgi.serviceloader=liquibase.resource.PathHandler)"; cardinality:=multiple
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.serializer.ChangeLogSerializer)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.parser.NamespaceDetails)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.database.Database)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.change.Change)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.database.DatabaseConnection)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.precondition.Precondition)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.serializer.SnapshotSerializer)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.configuration.AutoloadedConfigurations)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.diff.DiffGenerator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.lockservice.LockService)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.changelog.ChangeLogHistoryService)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.datatype.LiquibaseDataType)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.configuration.ConfigurationValueProvider)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.logging.LogService)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.snapshot.SnapshotGenerator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.parser.ChangeLogParser)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.servicelocator.ServiceLocator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.diff.compare.DatabaseObjectComparator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.command.LiquibaseCommand)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.license.LicenseService)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.diff.output.changelog.ChangeGenerator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.executor.Executor)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.structure.DatabaseObject)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.parser.SnapshotParser)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.hub.HubService)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.command.CommandStep)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.sqlgenerator.SqlGenerator)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.logging.mdc.MdcManager)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.logging.mdc.CustomMdcObject)"; cardinality:=multiple,
+                            osgi.serviceloader; filter:="(osgi.serviceloader=io.github.shshdxk.iquibase.resource.PathHandler)"; cardinality:=multiple
                         </Require-Capability>
                     </instructions>
                 </configuration>
@@ -335,8 +349,8 @@
                 <version>1.4.0</version>
                 <configuration>
                     <services>
-                        <param>liquibase.logging.mdc.MdcManager</param>
-                        <param>liquibase.logging.mdc.CustomMdcObject</param>
+                        <param>io.github.shshdxk.liquibase.logging.mdc.MdcManager</param>
+                        <param>io.github.shshdxk.liquibase.logging.mdc.CustomMdcObject</param>
                     </services>
                 </configuration>
                 <executions>

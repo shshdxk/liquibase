@@ -8,13 +8,13 @@
 
     <weld:scan>
         <weld:include name="**"/>
-        <weld:exclude name="liquibase.integration.ant.**">
+        <weld:exclude name="io.github.shshdxk.liquibase.integration.ant.**">
             <weld:if-class-available name="!org.apache.tools.ant.Task"/>
         </weld:exclude>
-        <weld:exclude name="liquibase.integration.servlet.**">
+        <weld:exclude name="io.github.shshdxk.liquibase.integration.servlet.**">
             <weld:if-class-available name="!javax.servlet.ServletContext"/>
         </weld:exclude>
-        <weld:exclude name="liquibase.integration.spring.**">
+        <weld:exclude name="io.github.shshdxk.liquibase.integration.spring.**">
             <weld:if-class-available name="!org.springframework.beans.factory.InitializingBean"/>
         </weld:exclude>
     </weld:scan>

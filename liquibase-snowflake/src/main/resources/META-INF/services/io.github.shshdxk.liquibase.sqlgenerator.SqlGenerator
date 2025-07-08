@@ -1,0 +1,9 @@
+io.github.shshdxk.liquibase.sqlgenerator.core.CreateSequenceGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.DropDefaultValueGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.DropProcedureGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.InsertOrUpdateGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.RenameTableGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.RenameViewGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.SetColumnRemarksGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.SetTableRemarksGeneratorSnowflake
+io.github.shshdxk.liquibase.sqlgenerator.core.GetViewDefinitionGeneratorSnowflake

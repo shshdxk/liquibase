@@ -1,0 +1,14 @@
+io.github.shshdxk.liquibase.snapshot.jvm.CatalogSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.ColumnSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.ColumnSnapshotGeneratorH2
+io.github.shshdxk.liquibase.snapshot.jvm.ColumnSnapshotGeneratorInformix
+io.github.shshdxk.liquibase.snapshot.jvm.ColumnSnapshotGeneratorOracle
+io.github.shshdxk.liquibase.snapshot.jvm.DataSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.ForeignKeySnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.IndexSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.PrimaryKeySnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.SchemaSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.SequenceSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.TableSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.UniqueConstraintSnapshotGenerator
+io.github.shshdxk.liquibase.snapshot.jvm.ViewSnapshotGenerator

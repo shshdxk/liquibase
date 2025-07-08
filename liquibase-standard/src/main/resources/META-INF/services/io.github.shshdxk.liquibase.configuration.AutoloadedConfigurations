@@ -1,0 +1,6 @@
+io.github.shshdxk.liquibase.GlobalConfiguration
+io.github.shshdxk.liquibase.integration.commandline.LiquibaseCommandLineConfiguration
+io.github.shshdxk.liquibase.hub.HubConfiguration
+io.github.shshdxk.liquibase.logging.core.DefaultLoggerConfiguration
+io.github.shshdxk.liquibase.sql.SqlConfiguration
+io.github.shshdxk.liquibase.parser.ChangeLogParserConfiguration

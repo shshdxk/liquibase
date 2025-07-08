@@ -1,0 +1,3 @@
+io.github.shshdxk.liquibase.logging.core.BufferedLogService
+io.github.shshdxk.liquibase.logging.core.CompositeLogService
+io.github.shshdxk.liquibase.logging.core.JavaLogService

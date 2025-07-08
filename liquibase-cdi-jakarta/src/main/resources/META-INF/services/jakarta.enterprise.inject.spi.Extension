@@ -1,1 +1,1 @@
-liquibase.integration.jakarta.cdi.CDIBootstrap
+io.github.shshdxk.liquibase.integration.jakarta.cdi.CDIBootstrap
