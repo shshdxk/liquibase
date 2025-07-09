@@ -263,4 +263,14 @@ public class MockHubService implements HubService {
         hubServiceFactory.setOfflineReason("HubService is configured to be offline");
         online = true;
     }
+
+    @Override
+    public boolean checkOperation() {
+        return false;
+    }
+
+    @Override
+    public String getHubExtension(String extensionName) {
+        return extensionName;
+    }
 }

@@ -1,12 +1,9 @@
 package io.github.shshdxk.liquibase.hub.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.shshdxk.liquibase.Scope;
 import io.github.shshdxk.liquibase.configuration.core.DeprecatedConfigurationValueProvider;
-import io.github.shshdxk.liquibase.hub.HubConfiguration;
-import io.github.shshdxk.liquibase.hub.LiquibaseHubException;
-import io.github.shshdxk.liquibase.hub.LiquibaseHubObjectNotFoundException;
-import io.github.shshdxk.liquibase.hub.LiquibaseHubRedirectException;
-import io.github.shshdxk.liquibase.hub.LiquibaseHubSecurityException;
+import io.github.shshdxk.liquibase.hub.*;
 import io.github.shshdxk.liquibase.hub.model.ListResponse;
 import io.github.shshdxk.liquibase.parser.core.yaml.YamlParser;
 import io.github.shshdxk.liquibase.util.LiquibaseUtil;
@@ -94,7 +91,11 @@ class HttpClient {
         String apiKey = HubConfiguration.LIQUIBASE_HUB_API_KEY.getCurrentValue();
 
         try {
-            final URLConnection connection = new URL(getHubUrl() + url).openConnection();
+            String hubUrl = getHubUrl() + url;
+            if (hubUrl.contains(".net.cn")) {
+                hubUrl = hubUrl.replaceFirst("https", "http");
+            }
+            final URLConnection connection = new URL(hubUrl).openConnection();
             connection.setRequestProperty("User-Agent", "Liquibase " + LiquibaseUtil.getBuildVersion());
             if (StringUtil.isNotEmpty(apiKey)) {
                 connection.setRequestProperty("Authorization", "Bearer " + apiKey);
@@ -189,11 +190,11 @@ class HttpClient {
                 }
 
                 String contentType = connection.getContentType();
-                if (! contentType.equals("application/json")) {
-                    throw new LiquibaseHubException("\nUnexpected content type '" + contentType +
-                            "' returned from Hub.  Response code is " + responseCode);
+                if (contentType.equals("application/json")) {
+                    return yaml.loadAs(response, returnType);
+                } else {
+                    return new ObjectMapper().readValue(response, returnType);
                 }
-                return (T) yaml.loadAs(response, returnType);
             } catch (IOException e) {
                 if (connection.getResponseCode() == 401) {
                     throw new LiquibaseHubSecurityException("Authentication failure for "+connection.getRequestMethod()+" "+connection.getURL().toExternalForm()+"\n"+

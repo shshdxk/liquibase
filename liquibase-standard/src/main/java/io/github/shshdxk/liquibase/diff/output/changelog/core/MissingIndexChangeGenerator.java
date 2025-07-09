@@ -72,9 +72,6 @@ public class MissingIndexChangeGenerator extends AbstractChangeGenerator impleme
         for (Column column : index.getColumns()) {
             change.addColumn(new AddColumnConfig(column));
         }
-        System.out.println("==================================== " + index.getRelation().getSchema().getName() +
-                " - " + index.getRelation().getName() + " - " + index.getName());
-
         return new Change[] { change };
     }
 

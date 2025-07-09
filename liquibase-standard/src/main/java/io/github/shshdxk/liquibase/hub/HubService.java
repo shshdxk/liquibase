@@ -65,4 +65,8 @@ public interface HubService extends Plugin, PrioritizedService {
     void sendOperationChanges(OperationChange operationChange) throws LiquibaseHubException;
 
     CoreInitOnboardingResponse validateOnboardingToken(String token) throws LiquibaseHubException;
+
+    boolean checkOperation();
+
+    String getHubExtension(String extensionName);
 }

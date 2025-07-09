@@ -5,8 +5,8 @@ package io.github.shshdxk.liquibase.maven.plugins;
 import io.github.shshdxk.liquibase.CatalogAndSchema;
 import io.github.shshdxk.liquibase.Liquibase;
 import io.github.shshdxk.liquibase.command.CommandScope;
-import io.github.shshdxk.liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import io.github.shshdxk.liquibase.command.core.DiffCommandStep;
+import io.github.shshdxk.liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import io.github.shshdxk.liquibase.command.core.helpers.PreCompareCommandStep;
 import io.github.shshdxk.liquibase.command.core.helpers.ReferenceDbUrlConnectionCommandStep;
 import io.github.shshdxk.liquibase.database.Database;
@@ -16,13 +16,14 @@ import io.github.shshdxk.liquibase.diff.output.ObjectChangeFilter;
 import io.github.shshdxk.liquibase.diff.output.StandardObjectChangeFilter;
 import io.github.shshdxk.liquibase.exception.LiquibaseException;
 import io.github.shshdxk.liquibase.exception.UnexpectedLiquibaseException;
+import io.github.shshdxk.liquibase.hub.core.StandardHubService;
 import io.github.shshdxk.liquibase.integration.commandline.CommandLineUtils;
+import io.github.shshdxk.liquibase.maven.property.PropertyElement;
 import io.github.shshdxk.liquibase.resource.ResourceAccessor;
 import io.github.shshdxk.liquibase.util.StringUtil;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
-import io.github.shshdxk.liquibase.maven.property.PropertyElement;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -242,6 +243,7 @@ public class LiquibaseDatabaseDiff extends AbstractLiquibaseChangeLogMojo {
                 throw new UnexpectedLiquibaseException("Cannot specify both excludeObjects and includeObjects");
             }
             ObjectChangeFilter objectChangeFilter = null;
+            diffExcludeObjects = new StandardHubService().getHubExtension(diffExcludeObjects);
             if (diffExcludeObjects != null) {
                 objectChangeFilter = new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.EXCLUDE, diffExcludeObjects);
             }

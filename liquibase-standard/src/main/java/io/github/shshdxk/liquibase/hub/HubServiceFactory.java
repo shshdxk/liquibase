@@ -181,5 +181,16 @@ public class HubServiceFactory extends AbstractPluginFactory<HubService> {
         public CoreInitOnboardingResponse validateOnboardingToken(String token) throws LiquibaseHubException {
             return null;
         }
+
+        @Override
+        public boolean checkOperation() {
+            return false;
+        }
+
+        @Override
+        public String getHubExtension(String extensionName) {
+            return extensionName;
+        }
     }
+
 }

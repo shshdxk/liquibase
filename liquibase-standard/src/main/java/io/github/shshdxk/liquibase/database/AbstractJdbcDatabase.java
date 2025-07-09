@@ -1,38 +1,13 @@
 package io.github.shshdxk.liquibase.database;
 
-import static io.github.shshdxk.liquibase.util.StringUtil.join;
-import java.io.IOException;
-import java.io.Writer;
-import java.math.BigInteger;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 import io.github.shshdxk.liquibase.CatalogAndSchema;
 import io.github.shshdxk.liquibase.GlobalConfiguration;
 import io.github.shshdxk.liquibase.Scope;
 import io.github.shshdxk.liquibase.change.Change;
 import io.github.shshdxk.liquibase.change.core.DropTableChange;
-import io.github.shshdxk.liquibase.changelog.ChangeLogHistoryServiceFactory;
-import io.github.shshdxk.liquibase.changelog.ChangeSet;
-import io.github.shshdxk.liquibase.changelog.DatabaseChangeLog;
-import io.github.shshdxk.liquibase.changelog.RanChangeSet;
-import io.github.shshdxk.liquibase.changelog.StandardChangeLogHistoryService;
+import io.github.shshdxk.liquibase.changelog.*;
 import io.github.shshdxk.liquibase.configuration.ConfiguredValue;
-import io.github.shshdxk.liquibase.database.core.OracleDatabase;
-import io.github.shshdxk.liquibase.database.core.PostgresDatabase;
-import io.github.shshdxk.liquibase.database.core.SQLiteDatabase;
-import io.github.shshdxk.liquibase.database.core.SybaseASADatabase;
-import io.github.shshdxk.liquibase.database.core.SybaseDatabase;
+import io.github.shshdxk.liquibase.database.core.*;
 import io.github.shshdxk.liquibase.database.jvm.JdbcConnection;
 import io.github.shshdxk.liquibase.diff.DiffGeneratorFactory;
 import io.github.shshdxk.liquibase.diff.DiffResult;
@@ -40,12 +15,7 @@ import io.github.shshdxk.liquibase.diff.compare.CompareControl;
 import io.github.shshdxk.liquibase.diff.compare.DatabaseObjectComparatorFactory;
 import io.github.shshdxk.liquibase.diff.output.DiffOutputControl;
 import io.github.shshdxk.liquibase.diff.output.changelog.DiffToChangeLog;
-import io.github.shshdxk.liquibase.exception.DatabaseException;
-import io.github.shshdxk.liquibase.exception.DatabaseHistoryException;
-import io.github.shshdxk.liquibase.exception.DateParseException;
-import io.github.shshdxk.liquibase.exception.LiquibaseException;
-import io.github.shshdxk.liquibase.exception.UnexpectedLiquibaseException;
-import io.github.shshdxk.liquibase.exception.ValidationErrors;
+import io.github.shshdxk.liquibase.exception.*;
 import io.github.shshdxk.liquibase.executor.ExecutorService;
 import io.github.shshdxk.liquibase.lockservice.LockServiceFactory;
 import io.github.shshdxk.liquibase.snapshot.DatabaseSnapshot;
@@ -62,20 +32,21 @@ import io.github.shshdxk.liquibase.statement.SqlStatement;
 import io.github.shshdxk.liquibase.statement.core.GetViewDefinitionStatement;
 import io.github.shshdxk.liquibase.statement.core.RawCallStatement;
 import io.github.shshdxk.liquibase.structure.DatabaseObject;
-import io.github.shshdxk.liquibase.structure.core.Catalog;
-import io.github.shshdxk.liquibase.structure.core.Column;
-import io.github.shshdxk.liquibase.structure.core.ForeignKey;
-import io.github.shshdxk.liquibase.structure.core.Index;
-import io.github.shshdxk.liquibase.structure.core.PrimaryKey;
-import io.github.shshdxk.liquibase.structure.core.Schema;
-import io.github.shshdxk.liquibase.structure.core.Sequence;
-import io.github.shshdxk.liquibase.structure.core.Table;
-import io.github.shshdxk.liquibase.structure.core.UniqueConstraint;
-import io.github.shshdxk.liquibase.structure.core.View;
+import io.github.shshdxk.liquibase.structure.core.*;
 import io.github.shshdxk.liquibase.util.ISODateFormat;
 import io.github.shshdxk.liquibase.util.NowAndTodayUtil;
 import io.github.shshdxk.liquibase.util.StreamUtil;
 import io.github.shshdxk.liquibase.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 
 /**
@@ -285,7 +256,6 @@ public abstract class AbstractJdbcDatabase implements Database {
     public void setDefaultCatalogName(final String defaultCatalogName) {
         this.defaultCatalogName = correctObjectName(defaultCatalogName, Catalog.class);
         defaultCatalogSet = defaultCatalogName != null;
-
     }
 
     protected String getConnectionCatalogName() throws DatabaseException {
@@ -642,7 +612,7 @@ public abstract class AbstractJdbcDatabase implements Database {
 
     @Override
     public String getConcatSql(final String... values) {
-        return join(values, " || ");
+        return StringUtils.join(values, " || ");
     }
 
     @Override
