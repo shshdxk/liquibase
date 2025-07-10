@@ -8,6 +8,6 @@
     -->
     <taskdef resource="liquibasetasks.properties"/>
 
-    <typedef name="database" classname="liquibase.integration.ant.type.DatabaseType"/>
-    <typedef name="changelogparameters" classname="liquibase.integration.ant.type.ChangeLogParametersType"/>
+    <typedef name="database" classname="io.github.shshdxk.liquibase.integration.ant.type.DatabaseType"/>
+    <typedef name="changelogparameters" classname="io.github.shshdxk.liquibase.integration.ant.type.ChangeLogParametersType"/>
 </antlib>

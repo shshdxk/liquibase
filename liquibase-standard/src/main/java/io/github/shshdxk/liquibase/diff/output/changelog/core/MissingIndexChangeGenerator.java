@@ -1,0 +1,90 @@
+package io.github.shshdxk.liquibase.diff.output.changelog.core;
+
+import io.github.shshdxk.liquibase.change.AddColumnConfig;
+import io.github.shshdxk.liquibase.change.Change;
+import io.github.shshdxk.liquibase.change.core.CreateIndexChange;
+import io.github.shshdxk.liquibase.database.Database;
+import io.github.shshdxk.liquibase.database.core.MSSQLDatabase;
+import io.github.shshdxk.liquibase.diff.compare.DatabaseObjectComparatorFactory;
+import io.github.shshdxk.liquibase.diff.output.DiffOutputControl;
+import io.github.shshdxk.liquibase.diff.output.changelog.AbstractChangeGenerator;
+import io.github.shshdxk.liquibase.diff.output.changelog.ChangeGeneratorChain;
+import io.github.shshdxk.liquibase.diff.output.changelog.MissingObjectChangeGenerator;
+import io.github.shshdxk.liquibase.structure.DatabaseObject;
+import io.github.shshdxk.liquibase.structure.core.Column;
+import io.github.shshdxk.liquibase.structure.core.Index;
+import io.github.shshdxk.liquibase.structure.core.PrimaryKey;
+import io.github.shshdxk.liquibase.structure.core.Table;
+
+public class MissingIndexChangeGenerator extends AbstractChangeGenerator implements MissingObjectChangeGenerator {
+    @Override
+    public int getPriority(Class<? extends DatabaseObject> objectType, Database database) {
+        if (Index.class.isAssignableFrom(objectType)) {
+            return PRIORITY_DEFAULT;
+        }
+        return PRIORITY_NONE;
+    }
+
+    @Override
+    public Class<? extends DatabaseObject>[] runAfterTypes() {
+        return new Class[] {
+                Table.class,
+                Column.class
+        };
+    }
+
+    @Override
+    public Class<? extends DatabaseObject>[] runBeforeTypes() {
+        return null;
+    }
+
+    @Override
+    public Change[] fixMissing(DatabaseObject missingObject, DiffOutputControl control, Database referenceDatabase, Database comparisonDatabase, ChangeGeneratorChain chain) {
+        Index index = (Index) missingObject;
+
+        if (comparisonDatabase instanceof MSSQLDatabase && index.getRelation() instanceof Table) {
+            PrimaryKey primaryKey = ((Table) index.getRelation()).getPrimaryKey();
+            if ((primaryKey != null) && DatabaseObjectComparatorFactory.getInstance().isSameObject(missingObject,
+                primaryKey.getBackingIndex(), control.getSchemaComparisons(), referenceDatabase)) {
+                return EMPTY_CHANGE; //will be handled by the PK
+            }
+        }
+
+        CreateIndexChange change = createCreateIndexChange();
+        change.setTableName(index.getRelation().getName());
+        if (control.getIncludeTablespace()) {
+            change.setTablespace(index.getTablespace());
+        }
+        if (control.getIncludeCatalog()) {
+            change.setCatalogName(index.getRelation().getSchema().getCatalogName());
+        }
+        if (control.getIncludeSchema()) {
+            change.setSchemaName(index.getRelation().getSchema().getName());
+        }
+        change.setIndexName(index.getName());
+        change.setUnique(((index.isUnique() != null) && index.isUnique()) ? Boolean.TRUE : null);
+        change.setClustered(((index.getClustered() != null) && index.getClustered()) ? Boolean.TRUE : null);
+        change.setUsing(index.getUsing());
+
+        if (referenceDatabase.createsIndexesForForeignKeys()) {
+            change.setAssociatedWith(index.getAssociatedWithAsString());
+        }
+
+        for (Column column : index.getColumns()) {
+        	change.addColumn(new AddColumnConfig(column));
+        }
+        if (comparisonDatabase instanceof MSSQLDatabase) { 
+        	for (String column : index.getIncludedColumns()) {
+        		AddColumnConfig c = new AddColumnConfig(new Column(column));
+        		c.setIncluded(true);
+        		change.addColumn(c);
+        	}
+        }
+
+        return new Change[] { change };
+    }
+
+    protected CreateIndexChange createCreateIndexChange() {
+        return new CreateIndexChange();
+    }
+}

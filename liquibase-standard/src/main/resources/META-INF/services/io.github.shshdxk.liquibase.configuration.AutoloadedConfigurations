@@ -1,0 +1,7 @@
+io.github.shshdxk.liquibase.GlobalConfiguration
+io.github.shshdxk.liquibase.integration.commandline.LiquibaseCommandLineConfiguration
+io.github.shshdxk.liquibase.logging.core.DefaultLoggerConfiguration
+io.github.shshdxk.liquibase.sql.SqlConfiguration
+io.github.shshdxk.liquibase.parser.ChangeLogParserConfiguration
+io.github.shshdxk.liquibase.analytics.configuration.AnalyticsArgs
+io.github.shshdxk.liquibase.license.LicenseTrackingArgs

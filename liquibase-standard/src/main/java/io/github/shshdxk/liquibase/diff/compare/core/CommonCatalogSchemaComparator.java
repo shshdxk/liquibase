@@ -1,0 +1,41 @@
+package io.github.shshdxk.liquibase.diff.compare.core;
+
+import io.github.shshdxk.liquibase.CatalogAndSchema;
+import io.github.shshdxk.liquibase.database.Database;
+import io.github.shshdxk.liquibase.diff.compare.CompareControl;
+import io.github.shshdxk.liquibase.diff.compare.DatabaseObjectComparator;
+import io.github.shshdxk.liquibase.structure.core.Catalog;
+import io.github.shshdxk.liquibase.structure.core.Schema;
+import io.github.shshdxk.liquibase.util.StringUtil;
+
+/**
+ * DatabaseObjectComparator for Catalog and Schema comparators with common stuff
+ */
+public abstract class CommonCatalogSchemaComparator implements DatabaseObjectComparator {
+    protected boolean equalsSchemas(Database accordingTo, String schemaName1, String schemaName2) {
+        if (CatalogAndSchema.CatalogAndSchemaCase.ORIGINAL_CASE.equals(accordingTo.getSchemaAndCatalogCase())){
+            return StringUtil.trimToEmpty(schemaName1).equals(StringUtil.trimToEmpty(schemaName2));
+        } else {
+            return StringUtil.trimToEmpty(schemaName1).equalsIgnoreCase(StringUtil.trimToEmpty(schemaName2));
+        }
+    }
+
+    protected String getComparisonSchemaOrCatalog(Database accordingTo, CompareControl.SchemaComparison comparison) {
+        if (accordingTo.supports(Schema.class)) {
+            return comparison.getComparisonSchema().getSchemaName();
+        } else if (accordingTo.supports(Catalog.class)) {
+            return comparison.getComparisonSchema().getCatalogName();
+        }
+        return null;
+    }
+
+    protected String getReferenceSchemaOrCatalog(Database accordingTo, CompareControl.SchemaComparison comparison) {
+        if (accordingTo.supports(Schema.class)) {
+            return comparison.getReferenceSchema().getSchemaName();
+        } else if (accordingTo.supports(Catalog.class)) {
+            return comparison.getReferenceSchema().getCatalogName();
+        }
+
+        return null;
+    }
+}

@@ -1,0 +1,3 @@
+io.github.shshdxk.liquibase.snapshot.jvm.SchemaSnapshotGeneratorSnowflake
+io.github.shshdxk.liquibase.snapshot.jvm.SequenceSnapshotGeneratorSnowflake
+io.github.shshdxk.liquibase.snapshot.jvm.UniqueConstraintSnapshotGeneratorSnowflake

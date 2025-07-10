@@ -1,0 +1,5 @@
+io.github.shshdxk.liquibase.command.core.DiffCommand
+io.github.shshdxk.liquibase.command.core.DiffToChangeLogCommand
+io.github.shshdxk.liquibase.command.core.GenerateChangeLogCommand
+io.github.shshdxk.liquibase.command.core.HistoryCommand
+io.github.shshdxk.liquibase.command.core.SnapshotCommand

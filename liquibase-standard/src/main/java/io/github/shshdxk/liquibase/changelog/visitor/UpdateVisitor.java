@@ -1,0 +1,173 @@
+package io.github.shshdxk.liquibase.changelog.visitor;
+
+import io.github.shshdxk.liquibase.ChecksumVersion;
+import io.github.shshdxk.liquibase.Scope;
+import io.github.shshdxk.liquibase.change.Change;
+import io.github.shshdxk.liquibase.change.CheckSum;
+import io.github.shshdxk.liquibase.changelog.ChangeLogHistoryService;
+import io.github.shshdxk.liquibase.changelog.ChangeLogHistoryServiceFactory;
+import io.github.shshdxk.liquibase.changelog.ChangeSet;
+import io.github.shshdxk.liquibase.changelog.ChangeSet.ExecType;
+import io.github.shshdxk.liquibase.changelog.ChangeSet.RunStatus;
+import io.github.shshdxk.liquibase.changelog.DatabaseChangeLog;
+import io.github.shshdxk.liquibase.changelog.filter.ChangeSetFilterResult;
+import io.github.shshdxk.liquibase.changelog.filter.ShouldRunChangeSetFilter;
+import io.github.shshdxk.liquibase.database.Database;
+import io.github.shshdxk.liquibase.database.ObjectQuotingStrategy;
+import io.github.shshdxk.liquibase.exception.DatabaseException;
+import io.github.shshdxk.liquibase.exception.DatabaseHistoryException;
+import io.github.shshdxk.liquibase.exception.LiquibaseException;
+import io.github.shshdxk.liquibase.exception.MigrationFailedException;
+import io.github.shshdxk.liquibase.executor.Executor;
+import io.github.shshdxk.liquibase.executor.ExecutorService;
+import io.github.shshdxk.liquibase.executor.LoggingExecutor;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+public class UpdateVisitor implements ChangeSetVisitor {
+
+    private final Database database;
+
+    private ChangeExecListener execListener;
+
+    private ShouldRunChangeSetFilter shouldRunChangeSetFilter;
+
+    /**
+     * @deprecated - please use the constructor with ChangeExecListener, which can be null.
+     */
+    @Deprecated
+    public UpdateVisitor(Database database) {
+        this.database = database;
+    }
+
+    public UpdateVisitor(Database database, ChangeExecListener execListener) {
+        this(database);
+        this.execListener = execListener;
+    }
+
+    public UpdateVisitor(Database database, ChangeExecListener execListener, ShouldRunChangeSetFilter shouldRunChangeSetFilter) {
+        this(database);
+        this.execListener = execListener;
+        this.shouldRunChangeSetFilter = shouldRunChangeSetFilter;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return ChangeSetVisitor.Direction.FORWARD;
+    }
+
+    @Override
+    public void visit(ChangeSet changeSet, DatabaseChangeLog databaseChangeLog, Database database,
+                      Set<ChangeSetFilterResult> filterResults) throws LiquibaseException {
+        logMdcData(changeSet);
+
+        // if we don't have shouldRunChangeSetFilter go on with the old behavior assuming that it has been validated before
+        boolean isAccepted = !changeSetInSkippedBecauseOfLicenseList(changeSet) &&
+                (this.shouldRunChangeSetFilter == null || this.shouldRunChangeSetFilter.accepts(changeSet).isAccepted());
+        CheckSum oldChecksum = updateCheckSumIfRequired(changeSet);
+        if (isAccepted) {
+            executeAcceptedChange(changeSet, databaseChangeLog, database);
+            this.database.commit();
+        } else if ((oldChecksum == null || oldChecksum.getVersion() < ChecksumVersion.latest().getVersion())) {
+            upgradeCheckSumVersionForAlreadyExecutedOrNullChange(changeSet, database, oldChecksum);
+            this.database.commit();
+        }
+    }
+
+    private static boolean changeSetInSkippedBecauseOfLicenseList(ChangeSet changeSet) {
+        List<ChangeSet> skippedChangeSets = changeSet.getChangeLog().getSkippedBecauseOfLicenseChangeSets();
+        return skippedChangeSets.stream().anyMatch(c -> c == changeSet);
+    }
+
+    /**
+     * Updates the checksum to the current version in Changeset object in case that it is null
+     * or if it is from a previous checksum version.
+     *
+     * @return oldChecksum the former checksum
+     */
+    private static CheckSum updateCheckSumIfRequired(ChangeSet changeSet) {
+        CheckSum oldChecksum = changeSet.getStoredCheckSum();
+        if (oldChecksum == null || oldChecksum.getVersion() < ChecksumVersion.latest().getVersion()) {
+            changeSet.clearCheckSum();
+            changeSet.setStoredCheckSum(changeSet.generateCheckSum(ChecksumVersion.latest()));
+        }
+        return oldChecksum;
+    }
+
+    /**
+     * Upgrade checksum for a given Changeset at database.
+     */
+    private static void upgradeCheckSumVersionForAlreadyExecutedOrNullChange(ChangeSet changeSet, Database database, CheckSum oldChecksum) throws DatabaseException {
+        Executor executor = Scope.getCurrentScope().getSingleton(ExecutorService.class).getExecutor("jdbc", database);
+        if (!(executor instanceof LoggingExecutor) && oldChecksum != null) {
+            Scope.getCurrentScope().getUI().sendMessage(String.format("Upgrading checksum for Changeset %s from %s to %s.",
+                    changeSet, oldChecksum, changeSet.getStoredCheckSum()));
+        }
+        ChangeLogHistoryService changeLogService = Scope.getCurrentScope().getSingleton(ChangeLogHistoryServiceFactory.class).getChangeLogService(database);
+        changeLogService.replaceChecksum(changeSet);
+    }
+
+    /**
+     * Executes the given changeset marking it as executed/reran/etc at the database
+     */
+    private void executeAcceptedChange(ChangeSet changeSet, DatabaseChangeLog databaseChangeLog, Database database)
+            throws DatabaseException, DatabaseHistoryException, MigrationFailedException {
+        Executor executor = Scope.getCurrentScope().getSingleton(ExecutorService.class).getExecutor("jdbc", database);
+        if (!(executor instanceof LoggingExecutor) && allChangeSetsShouldRun(changeSet)) {
+            Scope.getCurrentScope().getUI().sendMessage("Running Changeset: " + changeSet);
+        }
+        RunStatus runStatus = this.database.getRunStatus(changeSet);
+        Scope.getCurrentScope().getLog(getClass()).fine("Running Changeset: " + changeSet);
+        fireWillRun(changeSet, databaseChangeLog, database, runStatus);
+        ExecType execType;
+        ObjectQuotingStrategy previousStr = this.database.getObjectQuotingStrategy();
+        try {
+            execType = changeSet.execute(databaseChangeLog, execListener, this.database);
+
+        } catch (MigrationFailedException e) {
+            fireRunFailed(changeSet, databaseChangeLog, database, e);
+            throw e;
+        }
+        if (!Objects.equals(runStatus, RunStatus.NOT_RAN)
+                && (Objects.equals(execType, ExecType.EXECUTED) || Objects.equals(execType, ExecType.MARK_RAN))) {
+            execType = ExecType.RERAN;
+        }
+        addAttributesForMdc(changeSet, execType);
+        // reset object quoting strategy after running changeset
+        this.database.setObjectQuotingStrategy(previousStr);
+        if (execType != ExecType.SKIPPED) {
+            this.database.markChangeSetExecStatus(changeSet, execType);
+            fireRan(changeSet, databaseChangeLog, database, execType);
+        }
+    }
+
+    private boolean allChangeSetsShouldRun(ChangeSet changeSet) {
+        return changeSet.getChanges().stream().allMatch(Change::shouldRunOnOs);
+    }
+
+    protected void fireRunFailed(ChangeSet changeSet, DatabaseChangeLog databaseChangeLog, Database database, MigrationFailedException e) {
+        if (execListener != null) {
+            execListener.runFailed(changeSet, databaseChangeLog, database, e);
+        }
+    }
+
+    protected void fireWillRun(ChangeSet changeSet, DatabaseChangeLog databaseChangeLog, Database database2, RunStatus runStatus) {
+      if (execListener != null) {
+        execListener.willRun(changeSet, databaseChangeLog, database, runStatus);
+      }      
+    }
+
+    protected void fireRan(ChangeSet changeSet, DatabaseChangeLog databaseChangeLog, Database database2, ExecType execType) {
+      if (execListener != null) {
+        execListener.ran(changeSet, databaseChangeLog, database, execType);
+      }
+    }
+
+    private void addAttributesForMdc(ChangeSet changeSet, ExecType execType) {
+        changeSet.setAttribute("updateExecType", execType);
+        changeSet.setAttribute("deploymentId", Scope.getCurrentScope().getDeploymentId());
+    }
+}
+

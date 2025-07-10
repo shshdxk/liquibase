@@ -1,0 +1,4 @@
+io.github.shshdxk.liquibase.configuration.core.DeprecatedConfigurationValueProvider
+io.github.shshdxk.liquibase.configuration.core.SystemPropertyValueProvider
+io.github.shshdxk.liquibase.configuration.core.ScopeValueProvider
+io.github.shshdxk.liquibase.configuration.core.EnvironmentValueProvider

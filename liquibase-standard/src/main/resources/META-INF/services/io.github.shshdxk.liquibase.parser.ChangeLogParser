@@ -1,0 +1,5 @@
+io.github.shshdxk.liquibase.parser.core.formattedsql.FormattedSqlChangeLogParser
+io.github.shshdxk.liquibase.parser.core.json.JsonChangeLogParser
+io.github.shshdxk.liquibase.parser.core.sql.SqlChangeLogParser
+io.github.shshdxk.liquibase.parser.core.xml.XMLChangeLogSAXParser
+io.github.shshdxk.liquibase.parser.core.yaml.YamlChangeLogParser

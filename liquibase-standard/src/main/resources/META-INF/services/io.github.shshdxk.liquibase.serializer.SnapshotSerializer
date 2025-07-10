@@ -1,0 +1,4 @@
+io.github.shshdxk.liquibase.serializer.core.json.JsonSnapshotSerializer
+io.github.shshdxk.liquibase.serializer.core.string.StringSnapshotSerializer
+io.github.shshdxk.liquibase.serializer.core.string.StringSnapshotSerializerReadable
+io.github.shshdxk.liquibase.serializer.core.yaml.YamlSnapshotSerializer
