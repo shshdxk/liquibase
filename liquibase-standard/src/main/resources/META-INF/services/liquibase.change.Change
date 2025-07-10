@@ -45,3 +45,4 @@ liquibase.change.core.StopChange
 liquibase.change.core.TagDatabaseChange
 liquibase.change.core.UpdateDataChange
 liquibase.change.custom.CustomChangeWrapper
+liquibase.change.core.ModifyColumnChange

@@ -3,6 +3,7 @@ package liquibase.diff;
 import liquibase.database.Database;
 import liquibase.diff.compare.CompareControl;
 import liquibase.diff.compare.DatabaseObjectComparatorFactory;
+import liquibase.statement.DatabaseFunction;
 import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.Column;
 import liquibase.structure.core.DataType;
@@ -127,6 +128,13 @@ public class ObjectDifferences {
                 return false;
             }
 
+            if (referenceValue instanceof String) {
+                referenceValue = ((String) referenceValue).trim();
+            }
+            if (compareToValue instanceof String) {
+                compareToValue = ((String) compareToValue).trim();
+            }
+
             if ((referenceValue instanceof DatabaseObject) && (compareToValue instanceof DatabaseObject)) {
                 return DatabaseObjectComparatorFactory.getInstance().isSameObject((DatabaseObject) referenceValue, (DatabaseObject) compareToValue, schemaComparisons, accordingTo);
             } else {
@@ -134,6 +142,23 @@ public class ObjectDifferences {
                         && !referenceValue.getClass().equals(compareToValue.getClass())) { //standardize on a common number type
                     referenceValue = new BigDecimal(referenceValue.toString());
                     compareToValue = new BigDecimal(compareToValue.toString());
+                } else if ((referenceValue instanceof Boolean) && (compareToValue instanceof Integer)) {
+                    boolean bool = Objects.equals(compareToValue, 1);
+                    return referenceValue.equals(bool);
+                } else if ((referenceValue instanceof Boolean) && (compareToValue instanceof String)) {
+                    boolean bool = Objects.equals(compareToValue, "1");
+                    return referenceValue.equals(bool);
+                } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof Boolean)) {
+                    boolean bool = Objects.equals(((DatabaseFunction) referenceValue).getValue(), "1");
+                    return compareToValue.equals(bool);
+                } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof Number)) {
+                    return ((DatabaseFunction) referenceValue) .getValue().equalsIgnoreCase(compareToValue.toString());
+                } else if ((referenceValue instanceof DatabaseFunction) && (compareToValue instanceof String)) {
+                    return ((DatabaseFunction) referenceValue) .getValue().equalsIgnoreCase((String) compareToValue);
+                } else if ((referenceValue instanceof Number) && (compareToValue instanceof DatabaseFunction)) {
+                    return ((DatabaseFunction) compareToValue) .getValue().equalsIgnoreCase(referenceValue.toString());
+                } else if ((referenceValue instanceof String) && (compareToValue instanceof String)) {
+                    return ((String) referenceValue).equalsIgnoreCase(((String) compareToValue));
                 }
                 if ((referenceValue instanceof Number) && (referenceValue instanceof Comparable)) {
                     return (compareToValue instanceof Number) && (((Comparable) referenceValue).compareTo

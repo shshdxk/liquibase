@@ -10,7 +10,7 @@ import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.Column;
 import liquibase.structure.core.Relation;
 import liquibase.structure.core.UniqueConstraint;
-import liquibase.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,7 +104,7 @@ public class UniqueConstraintComparator implements DatabaseObjectComparator {
 
     @Override
     public ObjectDifferences findDifferences(DatabaseObject databaseObject1, DatabaseObject databaseObject2, Database accordingTo, CompareControl compareControl, DatabaseObjectComparatorChain chain, Set<String> exclude) {
-        exclude.add("name");
+//        exclude.add("name");
         exclude.add("columns");
         exclude.add("backingIndex");
         ObjectDifferences differences = chain.findDifferences(databaseObject1, databaseObject2, accordingTo, compareControl, exclude);
@@ -117,14 +117,16 @@ public class UniqueConstraintComparator implements DatabaseObjectComparator {
                 return false;
             }
             for (int i=0; i<referenceList.size(); i++) {
-                if (!StringUtil.trimToEmpty((referenceList.get(i)).getName()).equalsIgnoreCase(StringUtil.trimToEmpty(compareList.get(i).getName()))) {
+//                if (!StringUtil.trimToEmpty((referenceList.get(i)).getName()).equalsIgnoreCase(StringUtil.trimToEmpty(compareList.get(i).getName()))) {
+                String name = StringUtils.trimToEmpty((referenceList.get(i)).getName());
+                    if (compareList.stream().noneMatch(c -> name.equalsIgnoreCase(StringUtils.trimToEmpty(c.getName())))) {
                     return false;
                 }
             }
             return true;
         });
 
-        differences.compare("backingIndex", databaseObject1, databaseObject2, new ObjectDifferences.StandardCompareFunction(chain.getSchemaComparisons(), accordingTo));
+//        differences.compare("backingIndex", databaseObject1, databaseObject2, new ObjectDifferences.StandardCompareFunction(chain.getSchemaComparisons(), accordingTo));
         return differences;
     }
 }

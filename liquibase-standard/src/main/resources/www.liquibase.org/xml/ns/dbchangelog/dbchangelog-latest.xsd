@@ -1118,6 +1118,28 @@
         </xsd:complexType>
     </xsd:element>
 
+
+    <!-- Children for modifyColumn -->
+    <xsd:element name="modifyColumn">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="column" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:complexContent mixed="true">
+                            <xsd:extension base="columnType">
+                                <xsd:attribute name="beforeColumn" type="xsd:string"/>
+                                <xsd:attribute name="afterColumn" type="xsd:string"/>
+                                <xsd:attribute name="position" type="xsd:integer"/>
+                            </xsd:extension>
+                        </xsd:complexContent>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attributeGroup ref="changeAttributes"/>
+            <xsd:attributeGroup ref="tableNameAttribute"/>
+        </xsd:complexType>
+    </xsd:element>
+
     <xsd:element name="rollback">
         <xsd:complexType mixed="true">
             <xsd:choice>
@@ -1374,6 +1396,7 @@
             <xsd:element ref="dropView" maxOccurs="unbounded"/>
             <xsd:element ref="insert" maxOccurs="unbounded"/>
             <xsd:element ref="addColumn" maxOccurs="unbounded"/>
+            <xsd:element ref="modifyColumn" maxOccurs="unbounded"/>
             <xsd:element ref="sql" maxOccurs="unbounded"/>
             <xsd:element ref="createProcedure" maxOccurs="unbounded"/>
             <xsd:element ref="dropProcedure" maxOccurs="unbounded"/>

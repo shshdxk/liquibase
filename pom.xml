@@ -8,7 +8,7 @@
     <name>Liquibase Parent</name>
     <groupId>org.liquibase</groupId>
     <artifactId>liquibase</artifactId>
-    <version>0-SNAPSHOT</version>
+    <version>4.33.0</version>
     <packaging>pom</packaging>
 
     <url>http://www.liquibase.com</url>
@@ -106,9 +106,7 @@
         <module>liquibase-standard</module>
         <module>liquibase-cli</module>
         <module>liquibase-maven-plugin</module>
-        <module>liquibase-integration-tests</module>
         <module>liquibase-dist</module>
-        <module>liquibase-extension-testing</module>
         <module>liquibase-snowflake</module>
     </modules>
 

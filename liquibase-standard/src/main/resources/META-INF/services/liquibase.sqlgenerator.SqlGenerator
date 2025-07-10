@@ -106,3 +106,4 @@ liquibase.sqlgenerator.core.UpdateChangeSetChecksumGenerator
 liquibase.sqlgenerator.core.UpdateChangeSetFilenameGenerator
 liquibase.sqlgenerator.core.UpdateDataChangeGenerator
 liquibase.sqlgenerator.core.UpdateGenerator
+liquibase.sqlgenerator.core.ModifyColumnGenerator

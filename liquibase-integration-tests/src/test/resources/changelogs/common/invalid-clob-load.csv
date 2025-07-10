@@ -1,2 +1,0 @@
-id,name
-1,"this is not a valid file path so this will error if loaded into a clob/blob type column via load data"

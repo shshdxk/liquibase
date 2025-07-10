@@ -6,6 +6,7 @@ import liquibase.change.Change;
 import liquibase.change.core.*;
 import liquibase.database.Database;
 import liquibase.database.core.MSSQLDatabase;
+import liquibase.database.core.MySQLDatabase;
 import liquibase.database.core.OracleDatabase;
 import liquibase.database.core.PostgresDatabase;
 import liquibase.datatype.DataTypeFactory;
@@ -22,11 +23,7 @@ import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.*;
 import liquibase.util.ISODateFormat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implements ChangedObjectChangeGenerator {
     @Override
@@ -63,31 +60,90 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
         }
 
         List<Change> changes = new ArrayList<>();
-
-        handleTypeDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
-        handleNullableDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
-        handleDefaultValueDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
-        handleAutoIncrementDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
-
-        Difference remarksDiff = differences.getDifference("remarks");
-        if (remarksDiff != null) {
-            SetColumnRemarksChange change = new SetColumnRemarksChange();
+        if (comparisonDatabase instanceof MySQLDatabase) {
+            String catalogName = null;
+            String schemaName = null;
             if (control.getIncludeCatalog()) {
-                change.setCatalogName(column.getSchema().getCatalogName());
+                catalogName = column.getRelation().getSchema().getCatalog().getName();
             }
             if (control.getIncludeSchema()) {
-                change.setSchemaName(column.getSchema().getName());
-            }
-            change.setTableName(column.getRelation().getName());
-            change.setColumnName(column.getName());
-            change.setRemarks(column.getRemarks());
-
-            LiquibaseDataType columnDataType = DataTypeFactory.getInstance().from(column.getType(), comparisonDatabase);
-            if (columnDataType != null) {
-            change.setColumnDataType(columnDataType.toString());
+                schemaName = column.getRelation().getSchema().getName();
             }
 
-            changes.add(change);
+            String tableName = column.getRelation().getName();
+
+            boolean changed = false;
+            Difference typeDifference = differences.getDifference("type");
+            if (typeDifference != null) {
+                LiquibaseDataType type1 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                        .getReferenceValue(), comparisonDatabase);
+                LiquibaseDataType type2 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                        .getComparedValue(), comparisonDatabase);
+                if (!type1.getName().equals(type2.getName())) {
+                    if (!"tinyint".equalsIgnoreCase(type2.getName()) || !"boolean".equalsIgnoreCase(type1.getName())) {
+                        if ((type1.getName().equalsIgnoreCase("float") && type2.getName().equalsIgnoreCase("double")) ||
+                                (type1.getName().equalsIgnoreCase("double") && type1.getName().equalsIgnoreCase("float"))) {
+                        } else {
+                            changed = true;
+                        }
+                    }
+                } else if ("varchar".equalsIgnoreCase(type1.getName())) {
+                    Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;
+                    Object size2 = type2.getParameters().length > 0 ? type2.getParameters()[0] : null;
+                    if (size1 != null && size2 != null && !Objects.equals(size1, size2)) {
+                        changed = true;
+                    }
+                }
+            }
+            Difference nullableDifference = differences.getDifference("nullable");
+            if (!changed && nullableDifference != null && nullableDifference.getReferenceValue() != null) {
+                changed = true;
+            }
+            Difference difference = differences.getDifference("defaultValue");
+            if (!changed && difference != null) {
+                changed = true;
+            }
+            Difference remarksDiff = differences.getDifference("remarks");
+            if (!changed && remarksDiff != null) {
+                changed = true;
+            }
+            if (!changed) {
+                return changes.toArray(EMPTY_CHANGE);
+            }
+            column.setRelation(null);
+            ModifyColumnChange modifyColumn = new ModifyColumnChange();
+            modifyColumn.setCatalogName(catalogName);
+            modifyColumn.setSchemaName(schemaName);
+            modifyColumn.setTableName(tableName);
+            AddColumnConfig columnConfig = new AddColumnConfig(column);
+            modifyColumn.setColumns(Collections.singletonList(columnConfig));
+            changes.add(modifyColumn);
+        } else {
+            handleTypeDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
+            handleNullableDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
+            handleDefaultValueDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
+            handleAutoIncrementDifferences(column, differences, control, changes, referenceDatabase, comparisonDatabase);
+
+            Difference remarksDiff = differences.getDifference("remarks");
+            if (remarksDiff != null) {
+                SetColumnRemarksChange change = new SetColumnRemarksChange();
+                if (control.getIncludeCatalog()) {
+                    change.setCatalogName(column.getSchema().getCatalogName());
+                }
+                if (control.getIncludeSchema()) {
+                    change.setSchemaName(column.getSchema().getName());
+                }
+                change.setTableName(column.getRelation().getName());
+                change.setColumnName(column.getName());
+                change.setRemarks(column.getRemarks());
+
+                LiquibaseDataType columnDataType = DataTypeFactory.getInstance().from(column.getType(), comparisonDatabase);
+                if (columnDataType != null) {
+                    change.setColumnDataType(columnDataType.toDatabaseDataType(comparisonDatabase).getType());
+                }
+
+                changes.add(change);
+            }
         }
 
         return changes.toArray(EMPTY_CHANGE);
@@ -143,7 +199,7 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 }
                 change.setTableName(column.getRelation().getName());
                 change.setColumnName(column.getName());
-                change.setColumnDataType(DataTypeFactory.getInstance().from(column.getType(), comparisonDatabase).toString());
+                change.setColumnDataType(DataTypeFactory.getInstance().from(column.getType(), comparisonDatabase).toDatabaseDataType(comparisonDatabase).getType());
                 changes.add(change);
             }
         }
@@ -152,6 +208,25 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
     protected void handleTypeDifferences(Column column, ObjectDifferences differences, DiffOutputControl control, List<Change> changes, Database referenceDatabase, Database comparisonDatabase) {
         Difference typeDifference = differences.getDifference("type");
         if (typeDifference != null) {
+
+            boolean changed = false;
+            LiquibaseDataType type1 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                    .getReferenceValue(), comparisonDatabase);
+            LiquibaseDataType type2 = DataTypeFactory.getInstance().from((DataType) differences.getDifference("type")
+                    .getComparedValue(), comparisonDatabase);
+            if (!type1.getName().equalsIgnoreCase(type2.getName())) {
+                changed = true;
+            } else if ("varchar".equalsIgnoreCase(type1.getName())) {
+                Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;
+                Object size2 = type2.getParameters().length > 0 ? type2.getParameters()[0] : null;
+                if (size1 != null && size2 != null && !Objects.equals(size1, size2)) {
+                    changed = true;
+                }
+            }
+            if (!changed) {
+                return;
+            }
+
             String catalogName = null;
             String schemaName = null;
             if (control.getIncludeCatalog()) {
@@ -216,7 +291,7 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 change.setTableName(tableName);
                 change.setColumnName(column.getName());
                 DataType referenceType = (DataType) typeDifference.getReferenceValue();
-                change.setNewDataType(DataTypeFactory.getInstance().from(referenceType, comparisonDatabase).toString());
+                change.setNewDataType(DataTypeFactory.getInstance().from(referenceType, comparisonDatabase).toDatabaseDataType(comparisonDatabase).getType());
 
                 changes.add(change);
             }
@@ -240,7 +315,7 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 }
                 change.setTableName(column.getRelation().getName());
                 change.setColumnName(column.getName());
-                change.setColumnDataType(columnDataType.toString());
+                change.setColumnDataType(columnDataType.toDatabaseDataType(comparisonDatabase).getType());
 
                 changes.add(change);
 
@@ -254,7 +329,7 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                 }
                 change.setTableName(column.getRelation().getName());
                 change.setColumnName(column.getName());
-                change.setColumnDataType(columnDataType.toString());
+                change.setColumnDataType(columnDataType.toDatabaseDataType(comparisonDatabase).getType());
 
                 //
                 // Make sure we handle BooleanType values which are not Boolean

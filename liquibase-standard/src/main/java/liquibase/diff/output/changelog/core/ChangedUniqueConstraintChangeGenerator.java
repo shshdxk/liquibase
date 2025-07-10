@@ -5,6 +5,7 @@ import liquibase.change.core.AddUniqueConstraintChange;
 import liquibase.change.core.DropUniqueConstraintChange;
 import liquibase.database.Database;
 import liquibase.database.core.OracleDatabase;
+import liquibase.diff.Difference;
 import liquibase.diff.ObjectDifferences;
 import liquibase.diff.output.DiffOutputControl;
 import liquibase.diff.output.changelog.AbstractChangeGenerator;
@@ -45,9 +46,12 @@ public class ChangedUniqueConstraintChangeGenerator extends AbstractChangeGenera
 
         UniqueConstraint uniqueConstraint = (UniqueConstraint) changedObject;
 
+        Difference dropName = differences.getDifference("name");
+
         DropUniqueConstraintChange dropUniqueConstraintChange = createDropUniqueConstraintChange();
         dropUniqueConstraintChange.setTableName(uniqueConstraint.getRelation().getName());
-        dropUniqueConstraintChange.setConstraintName(uniqueConstraint.getName());
+//        dropUniqueConstraintChange.setConstraintName(uniqueConstraint.getName());
+        dropUniqueConstraintChange.setConstraintName(dropName == null ? uniqueConstraint.getName() : dropName.getComparedValue().toString());
 
         AddUniqueConstraintChange addUniqueConstraintChange = createAddUniqueConstraintChange();
         addUniqueConstraintChange.setConstraintName(uniqueConstraint.getName());
