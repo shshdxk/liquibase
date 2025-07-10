@@ -53,8 +53,8 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <maven.enforcer.requireMavenVersion>3.6</maven.enforcer.requireMavenVersion>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mmZ</maven.build.timestamp.format>
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -310,7 +310,7 @@
         <dependency>
             <groupId>org.firebirdsql.jdbc</groupId>
             <artifactId>jaybird</artifactId>
-            <version>5.0.8.java8</version>
+            <version>6.0.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -571,42 +571,7 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>non-jdk-8</id>
-            <activation>
-                <jdk>!1.8</jdk>
-            </activation>
-            <properties>
-                <maven.compiler.release>8</maven.compiler.release>
-                <net.bytebuddy.experimental>true</net.bytebuddy.experimental>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <version>5.8.0</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!-- CDILiquibaseTest is currently failing without this setting -->
-                            <argLine>
-                                @{argLine}
-                                --illegal-access=warn
-                                --add-opens java.base/java.lang=ALL-UNNAMED
-                                -Dnet.bytebuddy.experimental=true
-                            </argLine>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
+         <profile>
             <id>remote-repositories</id>
             <activation>
                 <property>
