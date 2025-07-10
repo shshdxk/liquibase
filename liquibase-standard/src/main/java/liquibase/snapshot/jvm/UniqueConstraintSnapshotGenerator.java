@@ -1,13 +1,5 @@
 package liquibase.snapshot.jvm;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import liquibase.Scope;
 import liquibase.database.Database;
 import liquibase.database.core.*;
@@ -19,14 +11,13 @@ import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.JdbcDatabaseSnapshot;
 import liquibase.statement.core.RawParameterizedSqlStatement;
 import liquibase.structure.DatabaseObject;
-import liquibase.structure.core.Catalog;
-import liquibase.structure.core.Column;
-import liquibase.structure.core.Index;
-import liquibase.structure.core.Relation;
-import liquibase.structure.core.Schema;
-import liquibase.structure.core.Table;
-import liquibase.structure.core.UniqueConstraint;
+import liquibase.structure.core.*;
 import liquibase.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UniqueConstraintSnapshotGenerator extends JdbcSnapshotGenerator {
 
@@ -375,29 +366,32 @@ public class UniqueConstraintSnapshotGenerator extends JdbcSnapshotGenerator {
                 String schemaName = database.correctObjectName(schema.getName(), Schema.class);
                 String constraintName = database.correctObjectName(name, UniqueConstraint.class);
                 String tableName = database.correctObjectName(table.getName(), Table.class);
-                StringBuilder sql = new StringBuilder("select CONSTRAINT_NAME, COLUMN_LIST as COLUMN_NAME, constraint_schema as CONSTRAINT_CONTAINER ")
-                        .append("from ?.constraints where constraint_type='UNIQUE' ");
-                parameters.add(database.getSystemSchema());
-                if (catalogName != null) {
-                    sql.append("and constraint_catalog=? ");
-                    parameters.add(catalogName);
-                }
-                if (schemaName != null) {
-                    sql.append("and constraint_schema=? ");
-                    parameters.add(schemaName);
-                }
+                rawSql = database.getConstraintList(catalogName, schemaName, constraintName, tableName, bulkQuery);
+                if (StringUtils.isEmpty(rawSql)) {
+                    StringBuilder sql = new StringBuilder("select CONSTRAINT_NAME, COLUMN_LIST as COLUMN_NAME, constraint_schema as CONSTRAINT_CONTAINER ")
+                            .append("from ?.constraints where constraint_type='UNIQUE' ");
+                    parameters.add(database.getSystemSchema());
+                    if (catalogName != null) {
+                        sql.append("and constraint_catalog=? ");
+                        parameters.add(catalogName);
+                    }
+                    if (schemaName != null) {
+                        sql.append("and constraint_schema=? ");
+                        parameters.add(schemaName);
+                    }
 
-                if (!bulkQuery) {
-                    if (tableName != null) {
-                        sql.append("and table_name=? ");
-                        parameters.add(tableName);
+                    if (!bulkQuery) {
+                        if (tableName != null) {
+                            sql.append("and table_name=? ");
+                            parameters.add(tableName);
+                        }
+                        if (constraintName != null) {
+                            sql.append("and constraint_name=?");
+                            parameters.add(constraintName);
+                        }
                     }
-                    if (constraintName != null) {
-                        sql.append("and constraint_name=?");
-                        parameters.add(constraintName);
-                    }
+                    rawSql = sql.toString();
                 }
-                rawSql = sql.toString();
             }
             List<Map<String, ?>> rows = Scope.getCurrentScope().getSingleton(ExecutorService.class).getExecutor("jdbc", database).queryForList(new RawParameterizedSqlStatement(rawSql, parameters.toArray()));
 

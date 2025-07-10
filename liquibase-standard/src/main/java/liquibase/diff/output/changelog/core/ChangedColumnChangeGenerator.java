@@ -81,11 +81,11 @@ public class ChangedColumnChangeGenerator extends AbstractChangeGenerator implem
                         .getComparedValue(), comparisonDatabase);
                 if (!type1.getName().equals(type2.getName())) {
                     if (!"tinyint".equalsIgnoreCase(type2.getName()) || !"boolean".equalsIgnoreCase(type1.getName())) {
-                        if ((type1.getName().equalsIgnoreCase("float") && type2.getName().equalsIgnoreCase("double")) ||
-                                (type1.getName().equalsIgnoreCase("double") && type1.getName().equalsIgnoreCase("float"))) {
-                        } else {
+//                        if ((type1.getName().equalsIgnoreCase("float") && type2.getName().equalsIgnoreCase("double")) ||
+//                                (type1.getName().equalsIgnoreCase("double") && type1.getName().equalsIgnoreCase("float"))) {
+//                        } else {
                             changed = true;
-                        }
+//                        }
                     }
                 } else if ("varchar".equalsIgnoreCase(type1.getName())) {
                     Object size1 = type1.getParameters().length > 0 ? type1.getParameters()[0] : null;

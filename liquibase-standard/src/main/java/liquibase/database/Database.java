@@ -26,7 +26,6 @@ import liquibase.statement.DatabaseFunction;
 import liquibase.statement.SqlStatement;
 import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.*;
-import liquibase.util.SqlUtil;
 import liquibase.util.StringUtil;
 
 import java.io.IOException;
@@ -693,6 +692,14 @@ public interface Database extends PrioritizedService, AutoCloseable {
      * @return A custom success message for the connect command, or null if not provided.
      */
     default String generateConnectCommandSuccessMessage() {
+        return null;
+    }
+
+    default String getUniqueConstraints(final String catalogName, final String schemaName, final String tableName) {
+        return null;
+    }
+
+    default String getConstraintList(String catalogName, String schemaName, String constraintName, String tableName, boolean bulkQuery) {
         return null;
     }
 

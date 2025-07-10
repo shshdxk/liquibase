@@ -18,6 +18,7 @@ import liquibase.structure.core.Table;
 import liquibase.structure.core.View;
 import liquibase.util.JdbcUtil;
 import liquibase.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -1945,8 +1946,10 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
                             } catch (DatabaseException e) {
                                 Scope.getCurrentScope().getLog(getClass()).fine("Cannot determine h2 version, using default unique constraint query", e);
                             }
+                        } else {
+                            sql = database.getUniqueConstraints(catalogName, schemaName, tableName);
                         }
-                        if (sql == null) {
+                        if (StringUtils.isBlank(sql)) {
 
                             sql = "select CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME "
                                     + "from " + database.getSystemSchema() + ".constraints "
