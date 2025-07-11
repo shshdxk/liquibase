@@ -15,7 +15,7 @@
 
     <properties>
         <maven.deploy.skip>false</maven.deploy.skip>
-        <maven.javadoc.skip>true</maven.javadoc.skip> <!-- javadocs created in the root pom currently -->
+        <maven.javadoc.skip>false</maven.javadoc.skip> <!-- javadocs created in the root pom currently -->
     </properties>
 
     <description>Liquibase is a tool for managing and executing database changes.</description>
@@ -70,10 +70,44 @@
                 <version>3.2.1</version>
                 <configuration>
                     <!-- sources.jar from this module is the shaded sources of others  -->
-                    <skipSource>true</skipSource>
+                    <skipSource>false</skipSource>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <includeDependencySources>true</includeDependencySources>
+                    <dependencySourceIncludes>
+                        <dependencySourceInclude>${project.groupId}:liquibase-standard</dependencySourceInclude>
+                        <dependencySourceInclude>${project.groupId}:liquibase-cli</dependencySourceInclude>
+                        <dependencySourceInclude>${project.groupId}:liquibase-snowflake</dependencySourceInclude>
+                    </dependencySourceIncludes>
+                    <quiet>true</quiet>
+                    <failOnError>false</failOnError>
+                    <additionalJOptions>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!--
             The final pom gets built by:
              1. The shade plugin fixing the dependenies
