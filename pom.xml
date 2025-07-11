@@ -47,9 +47,9 @@
     </ciManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:liquibase/liquibase.git</connection>
-        <url>scm:git:git@github.com:liquibase/liquibase.git</url>
-        <developerConnection>scm:git:git@github.com:liquibase/liquibase.git</developerConnection>
+        <connection>scm:git:https://github.com/shshdxk/liquibase.git</connection>
+        <url>scm:git:https://github.com/shshdxk/liquibase.git</url>
+        <developerConnection>scm:git:https://github.com/shshdxk/liquibase.git</developerConnection>
     </scm>
 
     <properties>
@@ -97,7 +97,7 @@
         <repository>
             <id>liquibase</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/liquibase/liquibase</url>
+            <url>https://central.sonatype.com/</url>
         </repository>
     </distributionManagement>
 
@@ -385,45 +385,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
-                    <includes>
-                        <include>**/Test*.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*Tests.java</include>
-                        <include>**/*TestCase.java</include>
-                        <include>**/*Spec.java</include>
-                    </includes>
-                    <failIfNoTests>${surefire.failIfNoTests}</failIfNoTests>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>integration-tests</id>
-                        <goals>
-                        <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>liquibase-integration-tests/**/*Test.java</include>
-                            </includes>
-                            <reuseForks>true</reuseForks>
-                            <!-- When running as a Maven plugin, the JaCoCo agent configuration is prepared by invoking the prepare-agent
-                            or prepare-agent-integration goals, before the actual tests are run. This sets a property named argLine which
-                            points to the JaCoCo agent, later passed as a JVM argument to the test runner -->
-                            <argLine>${itCoverageAgent}</argLine>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -517,7 +478,17 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -595,6 +566,37 @@
                     </snapshots>
                 </repository>
             </repositories>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <maven.deploy.skip>true</maven.deploy.skip>
+            </properties>
+            <modules>
+                <module>liquibase-core</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <configuration>
+                            <!-- 改成你自己的路径 -->
+                            <executable>gpg</executable>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>
