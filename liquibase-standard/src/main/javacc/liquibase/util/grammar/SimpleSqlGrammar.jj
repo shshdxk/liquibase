@@ -8,7 +8,7 @@ options {
 
 PARSER_BEGIN(SimpleSqlGrammar)
 
-package liquibase.util.grammar;
+package io.github.shshdxk.liquibase.util.grammar;
 
 /** An Simple SQL Grammar. */
 public class SimpleSqlGrammar {

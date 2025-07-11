@@ -12,7 +12,7 @@ import io.github.shshdxk.liquibase.datatype.DatabaseDataType;
 import io.github.shshdxk.liquibase.datatype.LiquibaseDataType;
 import io.github.shshdxk.liquibase.exception.DatabaseIncapableOfOperation;
 import io.github.shshdxk.liquibase.util.StringUtil;
-import liquibase.util.grammar.ParseException;
+import io.github.shshdxk.liquibase.util.grammar.ParseException;
 
 /**
  * Data type support for TIMESTAMP data types in various DBMS. All DBMS are at least expected to support the

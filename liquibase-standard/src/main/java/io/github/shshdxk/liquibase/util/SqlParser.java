@@ -1,7 +1,7 @@
 package io.github.shshdxk.liquibase.util;
 
 import io.github.shshdxk.liquibase.exception.UnexpectedLiquibaseException;
-import liquibase.util.grammar.*;
+import io.github.shshdxk.liquibase.util.grammar.*;
 
 import java.io.StringReader;
 

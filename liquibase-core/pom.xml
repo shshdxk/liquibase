@@ -171,7 +171,7 @@
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.4.1</version>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/classes/META-INF/maven/org.liquibase/liquibase-core/</outputDirectory>
+                    <outputDirectory>${project.build.directory}/classes/META-INF/maven/io.github.shshdxk/liquibase-core/</outputDirectory>
                     <flattenedPomFilename>pom.xml</flattenedPomFilename>
                 </configuration>
                 <executions>

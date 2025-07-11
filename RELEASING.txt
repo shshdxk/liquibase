@@ -13,9 +13,9 @@ commit and push liquibase.org
 
 release on sonatype
 - log in to oss.sonatype.org
-- staging repositories->select "org.liquibase..."
+- staging repositories->select "io.github.shshdxk..."
 - run "close" in top toolbar
-- select "org.liquibase..."
+- select "io.github.shshdxk..."
 - run "release" on top toolbar
 
 Test:
