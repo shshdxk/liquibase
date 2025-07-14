@@ -82,7 +82,12 @@ public class ModifyDataTypeGenerator extends AbstractSqlGenerator<ModifyDataType
                 ) {
             return "MODIFY";
         } else {
-            return "ALTER COLUMN";
+            String modifyString = database.getModifyString();
+            if (modifyString != null) {
+                return modifyString;
+            } else {
+                return "ALTER COLUMN";
+            }
         }
     }
 
@@ -99,7 +104,13 @@ public class ModifyDataTypeGenerator extends AbstractSqlGenerator<ModifyDataType
             InformixDatabase)) {
             return " ";
         } else {
-            return " TYPE ";
+            String preTypeString = database.getPreDataTypeString();
+            if (preTypeString != null) {
+                return preTypeString;
+            } else {
+                return " TYPE ";
+            }
         }
     }
+
 }

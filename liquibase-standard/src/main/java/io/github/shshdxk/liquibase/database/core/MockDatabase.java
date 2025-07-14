@@ -843,4 +843,5 @@ public class MockDatabase implements Database, InternalDatabase {
     public boolean supportsColumnRemarks() {
         return false;
     }
+
 }

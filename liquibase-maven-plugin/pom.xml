@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.shshdxk</groupId>
         <artifactId>liquibase</artifactId>
-        <version>4.22.0</version>
+        <version>4.22.1</version>
     </parent>
 
     <artifactId>liquibase-maven-plugin</artifactId>

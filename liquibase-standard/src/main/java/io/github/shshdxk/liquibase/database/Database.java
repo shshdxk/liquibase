@@ -14,6 +14,7 @@ import io.github.shshdxk.liquibase.change.Change;
 import io.github.shshdxk.liquibase.changelog.ChangeSet;
 import io.github.shshdxk.liquibase.changelog.DatabaseChangeLog;
 import io.github.shshdxk.liquibase.changelog.RanChangeSet;
+import io.github.shshdxk.liquibase.database.core.*;
 import io.github.shshdxk.liquibase.exception.DatabaseException;
 import io.github.shshdxk.liquibase.exception.DatabaseHistoryException;
 import io.github.shshdxk.liquibase.exception.DateParseException;
@@ -482,5 +483,9 @@ public interface Database extends PrioritizedService, AutoCloseable {
     boolean supportsTableRemarks();
 
     boolean supportsColumnRemarks();
+
+    default String getModifyString() {return null;}
+
+    default String getPreDataTypeString() {return null;}
 }
 
