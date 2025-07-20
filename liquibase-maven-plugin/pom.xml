@@ -11,6 +11,7 @@
 
     <artifactId>liquibase-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
+    <name>liquibase-maven-plugin</name>
     <description>A Maven plugin wraps up some of the functionality of Liquibase</description>
 
     <properties>
