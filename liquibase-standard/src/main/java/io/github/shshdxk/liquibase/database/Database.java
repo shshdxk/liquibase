@@ -3,6 +3,9 @@ package io.github.shshdxk.liquibase.database;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -487,5 +490,11 @@ public interface Database extends PrioritizedService, AutoCloseable {
     default String getModifyString() {return null;}
 
     default String getPreDataTypeString() {return null;}
+
+    default ResultSet getTablesResultSet(DatabaseMetaData metaData, String catalog, String schema, String table) throws SQLException {return null;}
+
+    default ResultSet getViewsResultSet(DatabaseMetaData metaData, String catalog, String schema, String view) throws SQLException {return null;}
+
+    default ResultSet getColumnsResultSet(DatabaseMetaData metaData, String catalog, String schema, String table, String column) throws SQLException {return null;}
 }
 

@@ -387,14 +387,16 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
                 CatalogAndSchema catalogAndSchema = new CatalogAndSchema(catalogName, schemaName).customize(database);
 
                 try {
-                    List<CachedRow> returnList =
-                       extract(
-                            databaseMetaData.getColumns(
-                                    ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema),
-                                    escapeForLike(((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema), database),
-                                    escapeForLike(tableName, database),
-                                    SQL_FILTER_MATCH_ALL)
-                    );
+                    ResultSet resultSet = database.getColumnsResultSet(databaseMetaData,
+                            catalogAndSchema.getCatalogName(), catalogAndSchema.getSchemaName(), tableName, SQL_FILTER_MATCH_ALL);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getColumns(
+                                ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema),
+                                escapeForLike(((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema), database),
+                                escapeForLike(tableName, database),
+                                SQL_FILTER_MATCH_ALL);
+                    }
+                    List<CachedRow> returnList = extract(resultSet);
                     //
                     // IF MARIADB
                     // Query to get actual data types and then map each column to its CachedRow
@@ -421,11 +423,15 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
                 CatalogAndSchema catalogAndSchema = new CatalogAndSchema(catalogName, schemaName).customize(database);
 
                 try {
-                    List<CachedRow> returnList =
-                        extract(databaseMetaData.getColumns(((AbstractJdbcDatabase) database)
-                                    .getJdbcCatalogName(catalogAndSchema),
-                            escapeForLike(((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema), database),
-                            SQL_FILTER_MATCH_ALL, SQL_FILTER_MATCH_ALL));
+                    ResultSet resultSet = database.getColumnsResultSet(databaseMetaData,
+                            catalogAndSchema.getCatalogName(), catalogAndSchema.getSchemaName(), SQL_FILTER_MATCH_ALL, SQL_FILTER_MATCH_ALL);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getColumns(((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema),
+                                escapeForLike(((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema), database),
+                                SQL_FILTER_MATCH_ALL, SQL_FILTER_MATCH_ALL);
+                    }
+
+                    List<CachedRow> returnList = extract(resultSet);
                     //
                     // IF MARIADB
                     // Query to get actual data types and then map each column to its CachedRow
@@ -1099,8 +1105,12 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
 
                     String catalog = ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema);
                     String schema = ((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema);
-                    return extract(databaseMetaData.getTables(catalog, escapeForLike(schema, database), ((table == null) ?
-                            SQL_FILTER_MATCH_ALL : escapeForLike(table, database)), new String[]{"TABLE"}));
+                    ResultSet resultSet = database.getTablesResultSet(databaseMetaData, catalog, schema, table);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getTables(catalog, escapeForLike(schema, database), ((table == null) ?
+                                SQL_FILTER_MATCH_ALL : escapeForLike(table, database)), new String[]{"TABLE"});
+                    }
+                    return extract(resultSet);
                 }
 
                 @Override
@@ -1119,7 +1129,11 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
 
                     String catalog = ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema);
                     String schema = ((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema);
-                    return extract(databaseMetaData.getTables(catalog, escapeForLike(schema, database), SQL_FILTER_MATCH_ALL, new String[]{"TABLE"}));
+                    ResultSet resultSet = database.getTablesResultSet(databaseMetaData, catalog, schema, null);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getTables(catalog, escapeForLike(schema, database), SQL_FILTER_MATCH_ALL, new String[]{"TABLE"});
+                    }
+                    return extract(resultSet);
                 }
 
                 private List<CachedRow> queryMssql(CatalogAndSchema catalogAndSchema, String tableName) throws DatabaseException, SQLException {
@@ -1258,8 +1272,12 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
 
                     String catalog = ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema);
                     String schema = ((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema);
-                    return extract(databaseMetaData.getTables(catalog, escapeForLike(schema, database), ((view == null) ? SQL_FILTER_MATCH_ALL
-                            : escapeForLike(view, database)), new String[]{"VIEW"}));
+                    ResultSet resultSet = database.getViewsResultSet(databaseMetaData, catalog, schema, view);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getTables(catalog, escapeForLike(schema, database), ((view == null) ? SQL_FILTER_MATCH_ALL
+                                : escapeForLike(view, database)), new String[]{"VIEW"});
+                    }
+                    return extract(resultSet);
                 }
 
                 @Override
@@ -1274,7 +1292,11 @@ public class JdbcDatabaseSnapshot extends DatabaseSnapshot {
 
                     String catalog = ((AbstractJdbcDatabase) database).getJdbcCatalogName(catalogAndSchema);
                     String schema = ((AbstractJdbcDatabase) database).getJdbcSchemaName(catalogAndSchema);
-                    return extract(databaseMetaData.getTables(catalog, escapeForLike(schema, database), SQL_FILTER_MATCH_ALL, new String[]{"VIEW"}));
+                    ResultSet resultSet = database.getViewsResultSet(databaseMetaData, catalog, schema, null);
+                    if (resultSet == null) {
+                        resultSet = databaseMetaData.getTables(catalog, escapeForLike(schema, database), SQL_FILTER_MATCH_ALL, new String[]{"VIEW"});
+                    }
+                    return extract(resultSet);
                 }
 
                 private List<CachedRow> queryMssql(CatalogAndSchema catalogAndSchema, String viewName) throws DatabaseException, SQLException {
