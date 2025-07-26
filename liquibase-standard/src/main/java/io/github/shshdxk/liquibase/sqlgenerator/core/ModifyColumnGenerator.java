@@ -135,7 +135,7 @@ public class ModifyColumnGenerator extends AbstractSqlGenerator<ModifyColumnStat
             columnType = DataTypeFactory.getInstance().fromDescription(statement.getColumnType() + (statement.isAutoIncrement() ? "{autoIncrement:true}" : ""), database).toDatabaseDataType(database);
         }
 
-        String alterTable = " ADD " + database.escapeColumnName(statement.getCatalogName(), statement.getSchemaName(), statement.getTableName(), statement.getColumnName());
+        String alterTable = " MODIFY " + database.escapeColumnName(statement.getCatalogName(), statement.getSchemaName(), statement.getTableName(), statement.getColumnName());
 
         if (columnType != null) {
             alterTable += " " + columnType;

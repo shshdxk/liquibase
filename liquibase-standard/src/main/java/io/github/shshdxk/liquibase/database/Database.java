@@ -704,5 +704,9 @@ public interface Database extends PrioritizedService, AutoCloseable {
         return null;
     }
 
+    default String getModifyString() {return null;}
+
+    default String getPreDataTypeString() {return null;}
+
 }
 

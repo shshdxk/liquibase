@@ -13,6 +13,8 @@ import io.github.shshdxk.liquibase.statement.core.ModifyDataTypeStatement;
 import io.github.shshdxk.liquibase.structure.core.Relation;
 import io.github.shshdxk.liquibase.structure.core.Table;
 
+import java.util.Objects;
+
 public class ModifyDataTypeGenerator extends AbstractSqlGenerator<ModifyDataTypeStatement> {
 
     @Override
@@ -82,7 +84,7 @@ public class ModifyDataTypeGenerator extends AbstractSqlGenerator<ModifyDataType
                 ) {
             return "MODIFY";
         } else {
-            return "ALTER COLUMN";
+            return Objects.requireNonNullElse(database.getModifyString(), "ALTER COLUMN");
         }
     }
 
@@ -99,7 +101,7 @@ public class ModifyDataTypeGenerator extends AbstractSqlGenerator<ModifyDataType
             InformixDatabase)) {
             return " ";
         } else {
-            return " TYPE ";
+            return Objects.requireNonNullElse(database.getPreDataTypeString(), " TYPE ");
         }
     }
 }
